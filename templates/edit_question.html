@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+{% block content %}
+    <h1>Edit Question
+        <a href="{{url_for('question_api.route_question', id = question['id'])}}">Back</a>
+    </h1>
+    <form enctype="multipart/form-data" action="{{url_for('question_api.route_edit_question', id = question['id'])}}" method="POST">
+        <p>
+            <label for="title">Title</label>
+            <textarea name="title" cols="30" rows="10">{{ question['title'] }}</textarea>
+        </p>
+        <br>
+        <p>
+            <label for="question">Question</label>
+            <textarea name="message" cols="30" rows="10">{{ question['message'] }}</textarea>
+        </p>
+        <br>
+        <p>  
+            <label>Picture</label>
+            <input type="file" name="image">
+        </p>
+        <br>
+        <p>
+            <input type="submit" name='submit' value="Edit">
+        </p>
+    </form>
+{% endblock %}

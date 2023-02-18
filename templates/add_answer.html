@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% block content %}
+    <p></p>
+    <h1>Add Answer
+        <a href="{{url_for('question_api.route_question', id = question['id'])}}">Back</a>
+    </h1>
+    <p>{{ question['message'] }}</p>
+    <form enctype="multipart/form-data" action="{{ url_for('answer_api.route_add_answer', id = question['id'])}}" method="POST"> 
+        <p>
+            <label>Your Answer</label>
+            <textarea name="message"></textarea>
+        </p>
+        <br>
+        <p>  
+            <label>Picture</label>
+            <input type="file" name="image">
+        </p>
+        <br>
+        <p>
+            <input type="submit" value="Add">
+        </p>
+    </form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% block content %}
+    <div class="question">
+        <h1>{{ question['title'] }}</h1>    
+        <p>{{ question['message'] }}</p>
+        <p><img src="{{url_for('route_image',filename=question['image'])}}" onerror='this.style.display = "none"'></p>
+    </div>
+    <div class="upvote">
+        <p>Vote Number: {{question['vote_number']}}</p>
+        <td style="width:10px"><a href="{{url_for('question_api.route_question_vote_up', question_id=question['id'], )}}"><button>+</button></a></td>
+        <td style="width:10px"><a href="{{url_for('question_api.route_question_vote_down', question_id=question['id'], )}}"><button>-</button></a></td>
+        <p>Viewed: {{question['view_number']}}
+        </p>
+    </div>
+    <div class="center">
+        <p><a href="{{url_for('question_api.route_delete_question', id=question['id'])}}">Delete Question</a></p>
+        <p><a href="{{url_for('question_api.route_edit_question', id=question['id'])}}">Edit Question</a></p>
+    </div>
+    <table style="width: 100%;">
+        <tr style="height: 80px;">
+            <th style="width: 2%;"></th>
+            <th>Answer</th>
+            <th>Image</th>
+            <th>Vote Numbers</th>
+            <th></th>
+            <th></th>
+        </tr>
+    {% for answer in answers %}
+    {% if answer['question_id'] == question['id'] %}
+        <tr>
+            <td><a href="{{url_for('answer_api.route_delete_answer', answer_id=answer['id'])}}">Delete</a></td>
+            <td>{{ answer['message'] }}</td>
+            <td><img src="{{url_for('route_image',filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
+            <td>{{ answer['vote_number']}}</td>
+            <td style="width:10px"><a href="{{url_for('answer_api.route_answer_vote_up', answer_id=answer['id'], )}}"><button>+</button></a></td>
+            <td style="width:10px"><a href="{{url_for('answer_api.route_answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a></td>
+        </tr>
+        
+    {% endif %}
+    {% endfor %}
+    </table>
+    <p><a href="{{url_for('answer_api.route_add_answer', id=question['id'])}}">Add Answer</a></p>
+{% endblock %}

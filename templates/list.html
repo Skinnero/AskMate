@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+{%block content%}
+<h1>Questions</h1>
+<div class="filter">
+    <br>
+    <form action="{{url_for('route_list', order_by=order_by, order_direction=order_direction)}}" method="GET">
+        <p>
+            <label>Sort by:</label>
+            <select name="order_by"     >
+                <option value="title">Title</option>
+                <option value="submission_time">Submission Time</option>
+                <option value="message">Message</option>
+                <option value="view_number">View Numbers</option>
+                <option value="vote_number">Vote Numbers</option>
+            </select>
+        </p>
+        <p>
+            <label>Order Direction:</label>
+            <select name="order_direction">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </p>
+        <p>
+            <input type="submit" value="Filter">
+        </p>
+        <br>
+        <p>
+            <a href="{{url_for('question_api.route_add_question')}}">Add Question</a>
+        </p>
+    </form>
+</div>  
+<div class="table">
+    <br>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Submission Time</th>
+            <th>Message</th>
+            <th>View Numbers</th>
+            <th>Vote Numbers</th>
+        </tr>
+        {% for index in questions|reverse %}
+        <tr>
+            <td><a href="{{url_for('question_api.route_question', id=index['id'])}}">{{ index['title'] }}</a></td>
+            <td>{{ index['submission_time'] }}</td>
+            <td>{{ index['message'] }}</td>
+            <td>{{ index['view_number'] }}</td>
+            <td>{{ index['vote_number'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{%endblock%}
