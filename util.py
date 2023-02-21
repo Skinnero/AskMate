@@ -62,3 +62,4 @@ def prepare_question_before_saving(data):
             'message': data['message'],
             'image': data['image'],
                 }
+

@@ -12,8 +12,7 @@ def read_all_data_from_db(table):
         list: list of dicts
     """    
     CURSOR.execute(f"SELECT * FROM {table}")
-    data = CURSOR.fetchall()
-    return data
+    return CURSOR.fetchall()
 
 def insert_data_into_db(table,value):
     """Takes is name of a table and value.
@@ -48,4 +47,16 @@ def update_data_in_db(table,value):
     for k, v in value.items():
         CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
 
+def sort_questions_by_order(table,order_by,order_direction):
+    """Sorts the table depending on a button urser proviedes
 
+    Args:
+        table (str): name of a table
+        order_by (str): name of a column
+        order_direction (str): direction
+
+    Returns:
+        list: list of sorted dicts
+    """    
+    CURSOR.execute(f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
+    return CURSOR.fetchall()

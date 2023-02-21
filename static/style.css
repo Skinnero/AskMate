@@ -52,9 +52,7 @@ nav p{
 }
 
 .table{
-    float: left;
-    width: 82%;
-    padding-right: 10px;
+    float: center;
 }
 form{
     display: table;
