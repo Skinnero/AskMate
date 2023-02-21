@@ -1,18 +1,19 @@
 from flask import Blueprint, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from os import path
-from connection import QUESTION_DATA, ANSWER_DATA, IMAGE_DATA, read_csv_file
-from util import get_data_by_id, vote_changer, question_view_number_changer
-from data_handler import delete_answers_to_question, delete_data_from_file, adding_to_file, edit_data
+from connection import ANSWER, QUESTION, IMAGE_DATA
+from util import get_data_by_id, prepare_question_before_saving
+from data_handler import read_all_data_from_db, insert_data_into_db, update_data_in_db, delete_data_in_db
 
 question_api = Blueprint('question_api', __name__)
 
 @question_api.route("/question/<id>", methods=["GET"])
 def route_question(id):
-    question = get_data_by_id(id, QUESTION_DATA)
-    answers = read_csv_file(ANSWER_DATA)
-    question_view_number_changer(QUESTION_DATA, question)
-    return render_template("question.html", question=question, answers=answers,)
+    question_data = get_data_by_id(id, read_all_data_from_db(QUESTION))
+    answers_data = read_all_data_from_db(ANSWER)
+    question_data['view_number'] += 1
+    update_data_in_db(QUESTION,question_data)
+    return render_template("question.html", question=question_data, answers=answers_data,)
 
 
 @question_api.route("/add-question", methods=["GET","POST"])
@@ -26,20 +27,21 @@ def route_add_question():
             file.save(path.join(IMAGE_DATA, filename))
         data = request.form.to_dict()
         data['image'] = file.filename
-        adding_to_file(QUESTION_DATA, data)
-        file_data = read_csv_file(QUESTION_DATA)
-        return redirect(url_for('question_api.route_question', id=(len(file_data))))
+        data = prepare_question_before_saving(data)
+        insert_data_into_db(QUESTION, data)
+        question = read_all_data_from_db(QUESTION)
+        print(question)
+        return redirect(url_for('question_api.route_question', id=question[-1]['id']))
     
 @question_api.route("/question/<id>/delete", methods=["GET"])
 def route_delete_question(id):
-    question = get_data_by_id(id,QUESTION_DATA)
-    delete_data_from_file(QUESTION_DATA, question)
-    delete_answers_to_question(ANSWER_DATA,id)
+    question = get_data_by_id(id,read_all_data_from_db(QUESTION))
+    delete_data_in_db(QUESTION, question)
     return redirect(url_for("route_list"))
 
 @question_api.route("/question/<id>/edit", methods=['GET','POST'])
 def route_edit_question(id):
-    question = get_data_by_id(id,QUESTION_DATA)
+    question = get_data_by_id(id,read_all_data_from_db(QUESTION))
     if request.method == 'GET':
         return render_template("edit_question.html",question=question)
     else:
@@ -50,18 +52,22 @@ def route_edit_question(id):
         else:
             filename = question['image']
         data = request.form.to_dict()
-        data['image'] = filename
-        edit_data(QUESTION_DATA, data, question)
+        question['title'] = data['title']
+        question['message'] = data['message']
+        question['image'] = filename
+        update_data_in_db(QUESTION, question)
         return redirect(url_for("question_api.route_question", id=id))
       
 @question_api.route("/question/<question_id>/vote-up", methods=["GET"])
 def route_question_vote_up(question_id):
-    question = get_data_by_id(question_id, QUESTION_DATA)
-    vote_changer(QUESTION_DATA, question, True)
+    data = get_data_by_id(question_id, read_all_data_from_db(QUESTION))
+    data['vote_number'] += 1
+    update_data_in_db(QUESTION,data)
     return redirect(url_for("route_list"))
 
 @question_api.route("/question/<question_id>/vote-down", methods=["GET"])
 def route_question_vote_down(question_id):
-    question = get_data_by_id(question_id, QUESTION_DATA)
-    vote_changer(QUESTION_DATA, question, False)
+    data = get_data_by_id(question_id, read_all_data_from_db(QUESTION))
+    data['vote_number'] -= 1
+    update_data_in_db(QUESTION,data)
     return redirect(url_for("route_list"))

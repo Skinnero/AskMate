@@ -1,45 +1,64 @@
-from connection import read_csv_file, write_to_csv_file
+from connection import CURSOR
+from datetime import datetime
 
-def get_data_by_id(id,file):
-    """Searches through the file for id and returns it as dict
+def catch_all_key_from_table(table):
+    """Takes in a table name and returns all column names
+    in a list
 
     Args:
-        id (str): id of a question that user picked
-        file (list): list of dict from file
+        table (str): name of a table
 
     Returns:
-        dict: dict with corresponding id
+        list: list of column names
     """    
-    list_of_id = read_csv_file(file)
-    for row in list_of_id:
-        if row['id'] == id:
-            return row
-
-def vote_changer(filename, data, decision):
-    """Takes is the data and iterates through file_data
-    if encounter data the changes its value depending of
-    the decision
+    CURSOR.execute(f'SELECT * FROM {table}')
+    return [k for k in CURSOR.fetchone().keys() if k != 'id']
+    
+def get_data_by_id(id,list_of_data):
+    """Takes in id and list of data and iterates
+    through them in search for specific id.
 
     Args:
-        data (dict): data of a question/answer
-        decision (bool): True if +1, False if -1
+        id (str): id of a data
+        list_of_data (list): list of dicts of a data
+    """
+    for d in list_of_data:
+        if int(d['id']) == int(id):
+            return d    
+        
+def prepare_answer_before_saving(data):
+    """Prepares data for saving
+    (Only for answer)
+
+    Args:
+        data (dict): dict of changed data
 
     Returns:
-        dict: changed data
-    """
-    file_data = read_csv_file(filename)    
-    for dictionary in file_data:
-        if dictionary == data and decision == True:
-            dictionary['vote_number'] = int(dictionary['vote_number']) + 1
-            write_to_csv_file(filename, file_data)
-        elif dictionary == data and decision == False:
-            dictionary['vote_number'] = int(dictionary['vote_number']) - 1
-            write_to_csv_file(filename, file_data)
-            
-def question_view_number_changer(filename, data):
+        dict: prepared data to change
+    """    
+    return {
+            'submission_time': datetime.now(),
+            'vote_number': 0,
+            'question_id': data['question_id'],
+            'message': data['message'],
+            'image': data['image'],
+                }
     
-    file_data = read_csv_file(filename)
-    for question in file_data:
-        if question == data:
-            question['view_number'] = int(question['view_number']) + 1
-    write_to_csv_file(filename, file_data)
+def prepare_question_before_saving(data):
+    """Prepares data for saving
+    (Only for question)
+
+    Args:
+        data (dict): dict of changed data
+
+    Returns:
+        dict: prepared data to change
+    """
+    return {
+            'submission_time': datetime.now(),
+            'view_number': 0,
+            'vote_number': 0,
+            'title': data['title'],
+            'message': data['message'],
+            'image': data['image'],
+                }

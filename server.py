@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, send_from_directory
 from question import question_api
 from answer import answer_api
-from connection import QUESTION_DATA, IMAGE_DATA, ANSWER_DATA, read_csv_file
-from data_handler import sort_table, manage_id_data
+from connection import QUESTION, IMAGE_DATA
+from data_handler import read_all_data_from_db
 
 app = Flask(__name__, template_folder='templates', static_folder='static', )
 app.register_blueprint(question_api)
@@ -10,6 +10,8 @@ app.register_blueprint(answer_api)
 
 @app.route('/images/<filename>')
 def route_image(filename):
+    if filename == 'None':
+        return
     return send_from_directory(IMAGE_DATA, filename)
 
 @app.route("/")
@@ -18,15 +20,13 @@ def route_home():
 
 @app.route("/list", methods=["GET"])
 def route_list():
-    questions = read_csv_file(QUESTION_DATA)
-    manage_id_data(QUESTION_DATA)
-    manage_id_data(ANSWER_DATA)
+    questions = read_all_data_from_db(QUESTION)
     # Sort list page
-    if request.args.get("order_by") != None and request.args.get("order_direction") != None:
-        order_by = request.args.get("order_by")
-        order_direction = request.args.get("order_direction")
-        questions = sort_table(order_by,order_direction,questions)
-        return render_template("list.html", questions=questions)
+    # if request.args.get("order_by") != None and request.args.get("order_direction") != None:
+    #     order_by = request.args.get("order_by")
+    #     order_direction = request.args.get("order_direction")
+    #     questions = sort_table(order_by,order_direction,questions)
+    #     return render_template("list.html", questions=questions)
     return render_template("list.html", questions=questions)
 
 if __name__ == "__main__":
