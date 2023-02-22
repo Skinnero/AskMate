@@ -1,5 +1,18 @@
 from connection import CURSOR
-from util import catch_all_key_from_table, string_validity_checker
+from util import string_validity_checker
+
+def catch_all_key_from_table(table):
+    """Takes in a table name and returns all column names
+    in a list
+
+    Args:
+        table (str): name of a table
+
+    Returns:
+        list: list of column names
+    """    
+    CURSOR.execute(f'SELECT * FROM {table}')
+    return [k for k in CURSOR.fetchone().keys() if k != 'id'] 
 
 def read_all_data_from_db(table):
     """Takes in a name of a table and returns all contents of it
@@ -90,7 +103,16 @@ def search_database_by_string(text):
         list: list of dicts
     """
     text = text.lower()    
-    CURSOR.execute(f"""SELECT DISTINCT question.title, question.submission_time, question.message, question.view_number, question.vote_number
-                   FROM question INNER JOIN answer ON question.id=answer.question_id WHERE LOWER(question.title) LIKE '%{text}%'
+    CURSOR.execute(f"""SELECT DISTINCT question.id, question.title, question.submission_time, question.message, question.view_number, question.vote_number
+                   FROM question LEFT JOIN answer ON question.id=answer.question_id WHERE LOWER(question.title) LIKE '%{text}%'
                    OR LOWER(question.message) LIKE '%{text}%' OR LOWER(answer.message) LIKE '%{text}%'""")
+    return CURSOR.fetchall()
+
+def top_five_latest_question():
+    """Return 5 latest question
+
+    Returns:
+        list: list of dicts
+    """    
+    CURSOR.execute(f"SELECT question.title, question.message FROM question ORDER BY submission_time desc LIMIT 5")
     return CURSOR.fetchall()

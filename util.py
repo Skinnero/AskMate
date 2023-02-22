@@ -1,19 +1,5 @@
-from connection import CURSOR
 from datetime import datetime
-
-def catch_all_key_from_table(table):
-    """Takes in a table name and returns all column names
-    in a list
-
-    Args:
-        table (str): name of a table
-
-    Returns:
-        list: list of column names
-    """    
-    CURSOR.execute(f'SELECT * FROM {table}')
-    return [k for k in CURSOR.fetchone().keys() if k != 'id']
-    
+ 
 def prepare_answer_before_saving(data):
     """Prepares data for saving
     (Only for answer)
