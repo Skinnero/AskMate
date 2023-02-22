@@ -1,6 +1,10 @@
 {% extends "index.html" %}
 {%block content%}
 <h1>Questions</h1>  
+<form action="{{url_for('route_list', search=search)}}">
+    <input name="search" type="text">
+    <button type="submit">Search</button>
+</form>
 <h1><a href="{{url_for('question_api.route_add_question')}}">ADD QUESTION</a></h1>
 <div class="table">
     <br>

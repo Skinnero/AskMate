@@ -14,7 +14,6 @@ def read_all_data_from_db(table):
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY id ASC")
     return CURSOR.fetchall()
 
-
 def read_single_row_from_db(table,id):
     """Takes in a name of a table and returns single row
     with all of its data
@@ -79,3 +78,19 @@ def sort_questions_by_order(table,order_by,order_direction):
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
     return CURSOR.fetchall()
 
+def search_database_by_string(text):
+    """Looks through db in search for a text
+    and returns on inner join question.id = answer.question_id.
+    It seraches only by question.title, question.message, answer.message
+
+    Args:
+        text (str): search string
+
+    Returns:
+        list: list of dicts
+    """
+    text = text.lower()    
+    CURSOR.execute(f"""SELECT DISTINCT question.title, question.submission_time, question.message, question.view_number, question.vote_number
+                   FROM question INNER JOIN answer ON question.id=answer.question_id WHERE LOWER(question.title) LIKE '%{text}%'
+                   OR LOWER(question.message) LIKE '%{text}%' OR LOWER(answer.message) LIKE '%{text}%'""")
+    return CURSOR.fetchall()
