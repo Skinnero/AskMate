@@ -25,6 +25,25 @@ def route_add_answer(id):
         filename = secure_filename(file.filename)
         return redirect(url_for('question_api.route_question', id=id))
 
+@answer_api.route("/answer/<answer_id>/edit", methods=['GET','POST'])
+def route_edit_answer(answer_id):
+    answer = read_single_row_from_db(ANSWER,answer_id)
+    if request.method == 'GET':
+        return render_template("edit_answer.html",answer=answer)
+    else:
+        file = request.files['image']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(path.join(IMAGE_DATA, filename))
+        else:
+            filename = answer['image']
+        data = request.form.to_dict()
+        answer['message'] = data['message']
+        answer['image'] = filename
+        update_data_in_db(ANSWER, answer)
+        return redirect(url_for("question_api.route_question", id=answer['question_id']))
+
+
 @answer_api.route("/answer/<answer_id>/delete", methods=['GET'])
 def route_delete_answer(answer_id):
     data = read_single_row_from_db(ANSWER,answer_id)

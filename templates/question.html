@@ -31,6 +31,7 @@
     {% if answer['question_id'] == question['id'] %}
         <tr>
             <td><a href="{{url_for('answer_api.route_delete_answer', answer_id=answer['id'])}}">Delete</a></td>
+            <td><a href="{{url_for('answer_api.route_edit_answer', answer_id=answer['id'])}}">Edit</a></td>
             <td>{{ answer['message'] }}</td>
             <td><img src="{{url_for('route_image',filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
             <td>{{ answer['vote_number']}}</td>
@@ -44,6 +45,7 @@
     {% if comment['answer_id'] == answer['id'] %}
         <tr>
             <td><a href="{{url_for('comment_api.route_delete_comment', comment_id = comment['id'])}}">Delete a comment</a></td>
+            <td><a href="{{url_for('comment_api.route_edit_comment', comment_id = comment['id'])}}">Edit a comment</a></td>
             <td>{{comment['message']}}</td>
             <td>{{comment['submission_time']}}</td>
             <td>{{comment['edited_count']}}</td>

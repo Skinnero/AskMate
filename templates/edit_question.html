@@ -1,8 +1,6 @@
 {% extends 'index.html' %}
 {% block content %}
-    <h1>Edit Question
-        <a href="{{url_for('question_api.route_question', id = question['id'])}}">Back</a>
-    </h1>
+    <h1>Edit Question</h1>
     <form enctype="multipart/form-data" action="{{url_for('question_api.route_edit_question', id = question['id'])}}" method="POST">
         <p>
             <label for="title">Title</label>

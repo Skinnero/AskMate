@@ -69,12 +69,6 @@ def prepare_comment_before_saving(data):
             'edited_count': 0,
                 }
 
-
-
-
-
-
-
 def string_validity_checker(text):
     """Takes the string and prepares it for
     saving into db

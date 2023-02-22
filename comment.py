@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, url_for, render_template
 from util import prepare_comment_before_saving
-from data_handler import insert_data_into_db, read_single_row_from_db, delete_data_in_db
+from data_handler import insert_data_into_db, read_single_row_from_db, delete_data_in_db, update_data_in_db
 from connection import COMMENT, ANSWER
 
 
@@ -29,6 +29,20 @@ def route_add_comment_to_answer(answer_id):
         print(comment_data)
         insert_data_into_db(COMMENT,comment_data)
         return redirect(url_for('question_api.route_question', id=answer_data['question_id']))
+
+@comment_api.route("/comment/<comment_id>/edit", methods=['GET','POST'])
+def route_edit_comment(comment_id):
+    comment = read_single_row_from_db(COMMENT,comment_id)
+    if request.method == 'GET':
+        return render_template("edit_comment.html",comment=comment)
+    else:
+        data = request.form.to_dict()
+        comment['message'] = data['message']
+        comment['edited_count'] += 1
+        answer = read_single_row_from_db(ANSWER,comment['answer_id'])
+        update_data_in_db(COMMENT, comment)
+        return redirect(url_for("question_api.route_question", id=answer['question_id']))
+
 
 @comment_api.route("/comments/<comment_id>/delete", methods=["GET"])
 def route_delete_comment(comment_id):

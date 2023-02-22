@@ -59,6 +59,8 @@ def update_data_in_db(table,value):
         value (dict): dict for a correct table
     """    
     for k, v in value.items():
+        if v == None:
+            continue
         if type(v) == str:
             v = string_validity_checker(v)
         CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
