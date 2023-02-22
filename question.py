@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from os import path
-from connection import ANSWER, QUESTION, IMAGE_DATA
+from connection import ANSWER, QUESTION, COMMENT, IMAGE_DATA
 from util import prepare_question_before_saving
 from data_handler import read_all_data_from_db, insert_data_into_db, update_data_in_db, delete_data_in_db, read_single_row_from_db
 
@@ -11,10 +11,10 @@ question_api = Blueprint('question_api', __name__)
 def route_question(id):
     question_data = read_single_row_from_db(QUESTION,id)
     answers_data = read_all_data_from_db(ANSWER)
+    comment_data = read_all_data_from_db(COMMENT)
     question_data['view_number'] += 1
-    print(question_data)
     update_data_in_db(QUESTION,question_data)
-    return render_template("question.html", question=question_data, answers=answers_data,)
+    return render_template("question.html", question=question_data, answers=answers_data, comments=comment_data)
 
 
 @question_api.route("/add-question", methods=["GET","POST"])
@@ -31,7 +31,6 @@ def route_add_question():
         data = prepare_question_before_saving(data)
         insert_data_into_db(QUESTION, data)
         question = read_all_data_from_db(QUESTION)
-        print(question)
         return redirect(url_for('question_api.route_question', id=question[-1]['id']))
     
 @question_api.route("/question/<id>/delete", methods=["GET"])

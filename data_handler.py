@@ -11,8 +11,9 @@ def read_all_data_from_db(table):
     Returns:
         list: list of dicts
     """    
-    CURSOR.execute(f"SELECT * FROM {table}")
+    CURSOR.execute(f"SELECT * FROM {table} ORDER BY id ASC")
     return CURSOR.fetchall()
+
 
 def read_single_row_from_db(table,id):
     """Takes in a name of a table and returns single row

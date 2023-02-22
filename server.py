@@ -1,12 +1,14 @@
 from flask import Flask, render_template, send_from_directory, request
 from question import question_api
 from answer import answer_api
+from comment import comment_api
 from connection import QUESTION, IMAGE_DATA
 from data_handler import read_all_data_from_db, sort_questions_by_order
 
 app = Flask(__name__, template_folder='templates', static_folder='static', )
 app.register_blueprint(question_api)
 app.register_blueprint(answer_api)
+app.register_blueprint(comment_api)
 
 @app.route('/images/<filename>')
 def route_image(filename):

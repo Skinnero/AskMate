@@ -48,7 +48,25 @@ def prepare_question_before_saving(data):
             'vote_number': 0,
             'title': data['title'],
             'message': data['message'],
-            'image': data['image'],
+            'image': data.get('image',''),
+                }
+
+def prepare_comment_before_saving(data):
+    """Prepares data for saving
+    (Only for comment)
+
+    Args:
+        data (dict): dict of changed data
+
+    Returns:
+        dict: prepared data to change
+    """
+    return {
+            'question_id': data.get('question_id'),
+            'answer_id': data.get('answer_id'),
+            'message': data['message'],
+            'submission_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'edited_count': 0,
                 }
 
 

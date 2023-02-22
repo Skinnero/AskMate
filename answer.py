@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from os import path
 from util import prepare_answer_before_saving
 from connection import ANSWER, QUESTION, IMAGE_DATA
-from data_handler import read_all_data_from_db, insert_data_into_db, delete_data_in_db, update_data_in_db, read_single_row_from_db
+from data_handler import insert_data_into_db, delete_data_in_db, update_data_in_db, read_single_row_from_db
 
 answer_api = Blueprint('answer_api', __name__)
 
