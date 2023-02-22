@@ -14,18 +14,6 @@ def catch_all_key_from_table(table):
     CURSOR.execute(f'SELECT * FROM {table}')
     return [k for k in CURSOR.fetchone().keys() if k != 'id']
     
-def get_data_by_id(id,list_of_data):
-    """Takes in id and list of data and iterates
-    through them in search for specific id.
-
-    Args:
-        id (str): id of a data
-        list_of_data (list): list of dicts of a data
-    """
-    for d in list_of_data:
-        if int(d['id']) == int(id):
-            return d    
-        
 def prepare_answer_before_saving(data):
     """Prepares data for saving
     (Only for answer)
@@ -37,7 +25,7 @@ def prepare_answer_before_saving(data):
         dict: prepared data to change
     """    
     return {
-            'submission_time': datetime.now(),
+            'submission_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'vote_number': 0,
             'question_id': data['question_id'],
             'message': data['message'],
@@ -55,11 +43,29 @@ def prepare_question_before_saving(data):
         dict: prepared data to change
     """
     return {
-            'submission_time': datetime.now(),
+            'submission_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'view_number': 0,
             'vote_number': 0,
             'title': data['title'],
             'message': data['message'],
             'image': data['image'],
                 }
+
+
+
+
+
+
+
+def string_validity_checker(text):
+    """Takes the string and prepares it for
+    saving into db
+
+    Args:
+        text (str): string 
+
+    Returns:
+        str: valid string
+    """    
+    return text.replace("'", "''")
 

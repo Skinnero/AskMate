@@ -10,8 +10,6 @@ app.register_blueprint(answer_api)
 
 @app.route('/images/<filename>')
 def route_image(filename):
-    if filename == 'None':
-        return
     return send_from_directory(IMAGE_DATA, filename)
 
 @app.route("/")

@@ -1,5 +1,5 @@
 from connection import CURSOR
-from util import catch_all_key_from_table
+from util import catch_all_key_from_table, string_validity_checker
 
 def read_all_data_from_db(table):
     """Takes in a name of a table and returns all contents of it
@@ -13,6 +13,19 @@ def read_all_data_from_db(table):
     """    
     CURSOR.execute(f"SELECT * FROM {table}")
     return CURSOR.fetchall()
+
+def read_single_row_from_db(table,id):
+    """Takes in a name of a table and returns single row
+    with all of its data
+
+    Args:
+        table (str): name of a table
+
+    Returns:
+        dict: dicts with data
+    """    
+    CURSOR.execute(f"SELECT * FROM {table} WHERE id='{id}'")
+    return CURSOR.fetchone()
 
 def insert_data_into_db(table,value):
     """Takes is name of a table and value.
@@ -45,6 +58,8 @@ def update_data_in_db(table,value):
         value (dict): dict for a correct table
     """    
     for k, v in value.items():
+        if type(v) == str:
+            v = string_validity_checker(v)
         CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
 
 def sort_questions_by_order(table,order_by,order_direction):
@@ -60,3 +75,4 @@ def sort_questions_by_order(table,order_by,order_direction):
     """    
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
     return CURSOR.fetchall()
+
