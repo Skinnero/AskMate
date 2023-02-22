@@ -21,7 +21,6 @@ def route_home():
 @app.route("/list", methods=["GET"])
 def route_list():
     questions = read_all_data_from_db(QUESTION)
-    
     # Sort list page
     if request.args.get("order_by") != None and request.args.get("order_direction") != None:
         order_by = request.args.get("order_by")
