@@ -1,7 +1,7 @@
 from connection import CURSOR
 from util import string_validity_checker
 
-def catch_all_key_from_table(table):
+def catch_all_key_from_db(table):
     """Takes in a table name and returns all column names
     in a list
 
@@ -48,7 +48,7 @@ def insert_data_into_db(table,value):
         table (str): name of a table
         value (dict): dict for a correct table
     """
-    table_keys = catch_all_key_from_table(table)
+    table_keys = catch_all_key_from_db(table)
     value = [v for v in value.values()]
     CURSOR.execute(f"INSERT INTO {table}({','.join(table_keys)}) VALUES ("+"%s"+", %s"*(len(value)-1)+");",value)
     
@@ -77,7 +77,7 @@ def update_data_in_db(table,value):
             v = string_validity_checker(v)
         CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
 
-def sort_questions_by_order(table,order_by,order_direction):
+def sort_db_by_order(table,order_by,order_direction):
     """Sorts the table depending on a button urser proviedes
 
     Args:
@@ -91,7 +91,7 @@ def sort_questions_by_order(table,order_by,order_direction):
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
     return CURSOR.fetchall()
 
-def search_database_by_string(text):
+def search_db_by_string(text):
     """Looks through db in search for a text
     and returns on inner join question.id = answer.question_id.
     It seraches only by question.title, question.message, answer.message
@@ -108,7 +108,7 @@ def search_database_by_string(text):
                    OR LOWER(question.message) LIKE '%{text}%' OR LOWER(answer.message) LIKE '%{text}%'""")
     return CURSOR.fetchall()
 
-def top_five_latest_question():
+def top_five_latest_question_from_db():
     """Return 5 latest question
 
     Returns:
