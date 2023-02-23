@@ -64,14 +64,14 @@ def route_question_vote_up(question_id):
     data = read_single_row_from_db_by_id(QUESTION,question_id)
     data['vote_number'] += 1
     update_data_in_db(QUESTION,data)
-    return redirect(url_for("route_list"))
+    return redirect(url_for('question_api.route_question', id=question_id))
 
 @question_api.route("/question/<question_id>/vote-down", methods=["GET"])
 def route_question_vote_down(question_id):
     data = read_single_row_from_db_by_id(QUESTION,question_id)
     data['vote_number'] -= 1
     update_data_in_db(QUESTION,data)
-    return redirect(url_for("route_list"))
+    return redirect(url_for('question_api.route_question', id=question_id))
 
 @question_api.route("/question/<question_id>/add-tag", methods=["GET","POST"])
 def route_question_add_tag(question_id):
