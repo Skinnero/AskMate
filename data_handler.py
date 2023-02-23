@@ -27,7 +27,7 @@ def read_all_data_from_db(table):
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY id ASC")
     return CURSOR.fetchall()
 
-def read_single_row_from_db(table,id):
+def read_single_row_from_db_by_id(table,id):
     """Takes in a name of a table and returns single row
     with all of its data
 
@@ -77,6 +77,40 @@ def update_data_in_db(table,value):
             v = string_validity_checker(v)
         CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
 
+def take_tags_from_db_by_question_id(id):
+    """Searches the db's and looks for name of a tag of a question_id
+
+    Args:
+        id (int): question_id number
+
+    Returns:
+        list: list of dicts
+    """    
+    CURSOR.execute(f"SELECT tag_id FROM question_tag WHERE question_id = {id}")
+    data = CURSOR.fetchall()
+    if data == []:
+        return []
+    tag_id = [str(k.get('tag_id')) for k in data]
+    CURSOR.execute(f"SELECT * FROM tag WHERE id IN ({', '.join(tag_id)}) ORDER BY name")
+    return CURSOR.fetchall()
+  
+def read_from_db(table, where_condition, column='*'):
+    """Takes in table, where_condition, column
+    to write select querry in db e.g.
+    SELECT columnt FROM table WHERE where_condition.
+    everytinh must be correct in string
+    
+    Args:
+        table (str): name of a table
+        where_condition (str): str of after where condition
+        column (str, optional): str of a column. Defaults to '*'.
+
+    Returns:
+        list: list of dicts
+    """    
+    CURSOR.execute(f"SELECT {column} FROM {table} WHERE {where_condition}")
+    return CURSOR.fetchall()
+    
 def sort_db_by_order(table,order_by,order_direction):
     """Sorts the table depending on a button urser proviedes
 
@@ -116,3 +150,4 @@ def top_five_latest_question_from_db():
     """    
     CURSOR.execute(f"SELECT question.title, question.message FROM question ORDER BY submission_time desc LIMIT 5")
     return CURSOR.fetchall()
+

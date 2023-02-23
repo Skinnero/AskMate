@@ -66,4 +66,3 @@ def string_validity_checker(text):
         str: valid string
     """    
     return text.replace("'", "''")
-

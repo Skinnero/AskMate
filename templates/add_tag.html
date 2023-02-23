@@ -1,0 +1,8 @@
+{%extends "index.html"%}
+{%block content%}
+    <form enctype="multipart/form-data" action="{{url_for('question_api.route_question_add_tag',question_id = question_id)}}" method="POST">
+        <label>Tag</label>
+        <textarea name="name" ></textarea>
+        <input type="submit" value="Add a tag">
+    </form>
+{%endblock%}

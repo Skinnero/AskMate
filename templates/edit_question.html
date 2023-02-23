@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block content %}
     <h1>Edit Question</h1>
-    <form enctype="multipart/form-data" action="{{url_for('question_api.route_edit_question', id = question['id'])}}" method="POST">
+    <form enctype="multipart/form-data" action="{{url_for('question_api.route_question_edit', id = question['id'])}}" method="POST">
         <p>
             <label for="title">Title</label>
             <textarea name="title" cols="30" rows="10">{{ question['title'] }}</textarea>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory, request, redirect, url_for
+from flask import Flask, render_template, send_from_directory, request
 from question import question_api
 from answer import answer_api
 from comment import comment_api
@@ -22,8 +22,6 @@ def route_home():
 @app.route("/list", methods=["GET"])
 def route_list():
     questions = read_all_data_from_db(QUESTION)
-    if request.args.get("search") != None:
-        return redirect(url_for("route_search",search=request.args.get("search")))
     if request.args.get("order_by") != None and request.args.get("order_direction") != None:
         order_by = request.args.get("order_by")
         order_direction = request.args.get("order_direction")
@@ -33,8 +31,8 @@ def route_list():
 @app.route("/search", methods=["GET"])
 def route_search():
     questions = search_db_by_string(request.args.get('search'))
-    # TODO: ADD TO LIST
-    return render_template("search.html", questions=questions)
+    return render_template("list.html",questions=questions)
+
 
 if __name__ == "__main__":
     app.run(

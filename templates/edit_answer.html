@@ -1,9 +1,9 @@
 {% extends 'index.html' %}
 {% block content %}
     <h1>Edit Answer</h1>
-    <form enctype="multipart/form-data" action="{{url_for('answer_api.route_edit_answer', answer_id = answer['id'])}}" method="POST">
+    <form enctype="multipart/form-data" action="{{url_for('answer_api.route_answer_edit', answer_id = answer['id'])}}" method="POST">
         <p>
-            <label for="question">Message</label>
+            <label>Message</label>
             <textarea name="message" cols="30" rows="10">{{ answer['message'] }}</textarea>
         </p>
         <br>
