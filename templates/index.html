@@ -15,11 +15,21 @@
             <a href="{{url_for('route_home')}}">Home</a>
             <a href="{{url_for('route_list')}}">Questions</a>
     </nav>
+
 {%block content%}
     <h1>Welcome to AskMate!</h1>
-    <p>Here you can post a Question about any topic you want and hope people will acually answer you.</p>
-    <p>You can provide answer for other users as well so you all become satisfied with our service.</p>
-    <p>Remeber to provide a decent answer otherwise you can be downvoted into oblivion and your answer/question will be deleted!</p>
+    <p style="text-align: center;">Here you can post a Question about any topic you want and hope people will acually answer you.</p>
+    <p style="text-align: center;">You can provide answer for other users as well so you all become satisfied with our service.</p>
+    <p style="text-align: center;">Remeber to provide a decent answer otherwise you can be downvoted into oblivion and your answer/question will be deleted!</p>
+
+    {% for question in questions %}
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 25%;">{{question['title']}}</td>
+            <td>{{question['message']}}</td>
+        </tr>
+    </table>
+    {% endfor %}
 {%endblock%}
 </body>
 </html>

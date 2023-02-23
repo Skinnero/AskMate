@@ -2,7 +2,7 @@
 {% block content %}
     <h1>Add Question
     </h1>
-    <form enctype="multipart/form-data" action="{{ url_for('question_api.route_add_question')}}" method="POST">
+    <form enctype="multipart/form-data" action="{{ url_for('question_api.route_question_add')}}" method="POST">
         <p>
             <label for="title">Title</label>
             <textarea name="title"></textarea>

@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block content %}
+    <h1>Edit Comment</h1>
+    <form enctype="multipart/form-data" action="{{url_for('comment_api.route_comment_edit', comment_id = comment['id'])}}" method="POST">
+        <p>
+            <label>Message</label>
+            <textarea name="message" cols="30" rows="10">{{ comment['message'] }}</textarea>
+        </p>
+        <br>
+        <p>
+            <input type="submit" name='submit' value="Edit">
+        </p>
+    </form>
+{% endblock %}

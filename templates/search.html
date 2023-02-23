@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{%block content%}
+<h1>Questions</h1>  
+<form action="{{url_for('route_list', search=search)}}">
+    <input name="search" type="text">
+    <button type="submit">Search</button>
+</form>
+<h1><a href="{{url_for('question_api.route_question_add')}}">ADD QUESTION</a></h1>
+<div class="table">
+    <br>
+    <table>
+        <tr>
+            <th>Title<a href="{{url_for('route_list', order_by = 'title', order_direction = 'asc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a><a href="{{url_for('route_list', order_by = 'title', order_direction = 'desc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a></th>
+            <th>Submission Time<a href="{{url_for('route_list', order_by = 'submission_time', order_direction = 'asc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a><a href="{{url_for('route_list', order_by = 'submission_time', order_direction = 'desc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a></th>
+            <th>Message<a href="{{url_for('route_list', order_by = 'message', order_direction = 'asc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a><a href="{{url_for('route_list', order_by = 'message', order_direction = 'desc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a></th>
+            <th>View Numbers<a href="{{url_for('route_list', order_by = 'view_number', order_direction = 'asc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a><a href="{{url_for('route_list', order_by = 'view_number', order_direction = 'desc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a></th>
+            <th>Vote Numbers<a href="{{url_for('route_list', order_by = 'vote_number', order_direction = 'asc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a><a href="{{url_for('route_list', order_by = 'vote_number', order_direction = 'desc')}}"><img src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a></th>
+        </tr>
+        {% for index in questions %}
+        <tr>
+            <td><a href="{{url_for('question_api.route_question', id=index['id'])}}">{{ index['title'] }}</a></td>
+            <td>{{ index['submission_time'] }}</td>
+            <td>{{ index['message'] }}</td>
+            <td>{{ index['view_number'] }}</td>
+            <td>{{ index['vote_number'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{%endblock%}

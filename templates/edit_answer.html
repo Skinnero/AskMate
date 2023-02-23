@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+{% block content %}
+    <h1>Edit Answer</h1>
+    <form enctype="multipart/form-data" action="{{url_for('answer_api.route_answer_edit', answer_id = answer['id'])}}" method="POST">
+        <p>
+            <label>Message</label>
+            <textarea name="message" cols="30" rows="10">{{ answer['message'] }}</textarea>
+        </p>
+        <br>
+        <p>  
+            <label>Picture</label>
+            <input type="file" name="image">
+        </p>
+        <br>
+        <p>
+            <input type="submit" name='submit' value="Edit">
+        </p>
+    </form>
+{% endblock %}
