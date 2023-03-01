@@ -4,7 +4,6 @@ from os import path, environ
 from dotenv import load_dotenv
 load_dotenv()
 
-
 # DB Table names
 ANSWER = 'answer'
 QUESTION = 'question'
