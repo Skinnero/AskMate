@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for, render_template
+from flask import Blueprint, request, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
 from os import path
 from connection import ANSWER, QUESTION, COMMENT, IMAGE_DATA, QUESTION_TAG, TAG
