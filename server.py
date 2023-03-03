@@ -30,8 +30,9 @@ def route_list():
 
 @app.route("/search", methods=["GET"])
 def route_search():
-    questions = search_db_by_string(request.args.get('search'))
-    return render_template("list.html",questions=questions)
+    search = request.args.get('search')
+    questions = search_db_by_string(search, request.args.get("order_by"), request.args.get("order_direction"))
+    return render_template("search.html",questions=questions, search=search)
 
 
 if __name__ == "__main__":

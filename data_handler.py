@@ -24,7 +24,7 @@ def read_all_data_from_db(table):
     Returns:
         list: list of dicts
     """    
-    CURSOR.execute(f"SELECT * FROM {table} ORDER BY id ASC")
+    CURSOR.execute(f"SELECT * FROM {table} ORDER BY id DESC")
     return CURSOR.fetchall()
 
 def read_single_row_from_db_by_id(table,id):
@@ -125,7 +125,7 @@ def sort_db_by_order(table,order_by,order_direction):
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
     return CURSOR.fetchall()
 
-def search_db_by_string(text):
+def search_db_by_string(text, order_by=None, order_direction=None):
     """Looks through db in search for a text
     and returns on inner join question.id = answer.question_id.
     It seraches only by question.title, question.message, answer.message
@@ -136,10 +136,14 @@ def search_db_by_string(text):
     Returns:
         list: list of dicts
     """
+    # Handling empty orders
+    if order_by == None: order_by,order_direction = ('id','asc')
     text = text.lower()    
-    CURSOR.execute(f"""SELECT DISTINCT question.id, question.title, question.submission_time, question.message, question.view_number, question.vote_number
-                   FROM question LEFT JOIN answer ON question.id=answer.question_id WHERE LOWER(question.title) LIKE '%{text}%'
-                   OR LOWER(question.message) LIKE '%{text}%' OR LOWER(answer.message) LIKE '%{text}%'""")
+    CURSOR.execute(f""" SELECT DISTINCT question.id, question.title, question.submission_time, question.message,
+                        question.view_number, question.vote_number
+                        FROM question LEFT JOIN answer ON question.id=answer.question_id WHERE LOWER(question.title) LIKE '%{text}%'
+                        OR LOWER(question.message) LIKE '%{text}%' OR LOWER(answer.message) LIKE '%{text}%'
+                        ORDER BY {order_by} {order_direction};""")
     return CURSOR.fetchall()
 
 def top_five_latest_question_from_db():

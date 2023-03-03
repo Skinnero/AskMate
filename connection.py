@@ -1,8 +1,8 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from os import path
-from enviroment import DATABASE, USER, PASSWORD
-
+from os import path, environ
+from dotenv import load_dotenv
+load_dotenv()
 
 # DB Table names
 ANSWER = 'answer'
@@ -12,7 +12,12 @@ TAG = 'tag'
 QUESTION_TAG = 'question_tag'
 
 # Image folder
-IMAGE_DATA = path.join('static','images')
+IMAGE_DATA = path.join('static', 'images')
+
+# Enviroment data
+DATABASE = environ.get('DATABASE')
+USER = environ.get('USER')
+PASSWORD = environ.get('PASSWORD')
 
 def connect_to_database():
     """Conncts to database and returns cursor

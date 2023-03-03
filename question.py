@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for, render_template
+from flask import Blueprint, request, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
 from os import path
 from connection import ANSWER, QUESTION, COMMENT, IMAGE_DATA, QUESTION_TAG, TAG
@@ -32,7 +32,7 @@ def route_question_add():
         data = prepare_question_before_saving(data)
         insert_data_into_db(QUESTION, data)
         question = read_all_data_from_db(QUESTION)
-        return redirect(url_for('question_api.route_question', id=question[-1]['id']))
+        return redirect(url_for('question_api.route_question', id=question[0]['id']))
     
 @question_api.route("/question/<id>/delete", methods=["GET"])
 def route_question_delete(id):
@@ -64,14 +64,14 @@ def route_question_vote_up(question_id):
     data = read_single_row_from_db_by_id(QUESTION,question_id)
     data['vote_number'] += 1
     update_data_in_db(QUESTION,data)
-    return redirect(url_for("route_list"))
+    return redirect(url_for('question_api.route_question', id=question_id))
 
 @question_api.route("/question/<question_id>/vote-down", methods=["GET"])
 def route_question_vote_down(question_id):
     data = read_single_row_from_db_by_id(QUESTION,question_id)
     data['vote_number'] -= 1
     update_data_in_db(QUESTION,data)
-    return redirect(url_for("route_list"))
+    return redirect(url_for('question_api.route_question', id=question_id))
 
 @question_api.route("/question/<question_id>/add-tag", methods=["GET","POST"])
 def route_question_add_tag(question_id):
