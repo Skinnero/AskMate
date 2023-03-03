@@ -32,7 +32,7 @@ def route_question_add():
         data = prepare_question_before_saving(data)
         insert_data_into_db(QUESTION, data)
         question = read_all_data_from_db(QUESTION)
-        return redirect(url_for('question_api.route_question', id=question[-1]['id']))
+        return redirect(url_for('question_api.route_question', id=question[0]['id']))
     
 @question_api.route("/question/<id>/delete", methods=["GET"])
 def route_question_delete(id):
