@@ -1,8 +1,9 @@
 {%extends "index.html"%}
 {%block content%}
-    <form enctype="multipart/form-data" action="{{url_for('comment_api.route_comment_add_to_answer',answer_id = answer_id)}}" method="POST">
-        <label for="question">Comment</label>
-        <textarea name="message" ></textarea>
-        <input type="submit" name="submit" value="Post">
-    </form>
+<form enctype="multipart/form-data" action="{{url_for('comment_api.comment_add_to_answer',answer_id = answer_id)}}"
+    method="POST">
+    <label for="question">Comment</label>
+    <textarea name="message"></textarea>
+    <input class="button" type="submit" name="submit" value="Post">
+</form>
 {%endblock%}

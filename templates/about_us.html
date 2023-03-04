@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+{% block content %}
+<head>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+</style>
+</head>
+<body>
+
+<h1 style="text-align:center;">We Are -Skinero- Group</h1>
+
+
+<div class="row">
+  <div class="column">
+    <img src="/static/images/ja.jpg" alt="Andrzej" style="width:70%">
+    <h1 style="text-align:center;"> Andrzej</h1>
+  </div>
+  <div class="column">
+    <img src="/static/images/krzysiek1.jpg" alt="Krzysiek" style="width:70%">
+    <h1 style="text-align:center;"> Krzysztof</h1>
+  </div>
+  <div class="column">
+    <img src="/static/images/kacper.jpg" alt="Kacper" style="width:70%">
+    <h1 style="text-align:center;"> Kacper</h1>
+  </div>
+</div>
+
+</body>
+</html>
+{% endblock %}

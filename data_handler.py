@@ -10,9 +10,9 @@ def catch_all_key_from_db(table):
 
     Returns:
         list: list of column names
-    """    
+    """
     CURSOR.execute(f'SELECT * FROM {table}')
-    return [k for k in CURSOR.fetchone().keys() if k != 'id'] 
+    return [k for k in CURSOR.fetchone().keys() if k != 'id']
 
 def read_all_data_from_db(table):
     """Takes in a name of a table and returns all contents of it
@@ -23,11 +23,11 @@ def read_all_data_from_db(table):
 
     Returns:
         list: list of dicts
-    """    
+    """
     CURSOR.execute(f"SELECT * FROM {table} ORDER BY id DESC")
     return CURSOR.fetchall()
 
-def read_single_row_from_db_by_id(table,id):
+def read_single_row_from_db_by_id(table, id):
     """Takes in a name of a table and returns single row
     with all of its data
 
@@ -36,11 +36,11 @@ def read_single_row_from_db_by_id(table,id):
 
     Returns:
         dict: dicts with data
-    """    
+    """
     CURSOR.execute(f"SELECT * FROM {table} WHERE id='{id}'")
     return CURSOR.fetchone()
 
-def insert_data_into_db(table,value):
+def insert_data_into_db(table, value):
     """Takes is name of a table and value.
     Inserts it to the table
 
@@ -50,56 +50,58 @@ def insert_data_into_db(table,value):
     """
     table_keys = catch_all_key_from_db(table)
     value = [v for v in value.values()]
-    CURSOR.execute(f"INSERT INTO {table}({','.join(table_keys)}) VALUES ("+"%s"+", %s"*(len(value)-1)+");",value)
-    
-def delete_data_in_db(table,value):
+    CURSOR.execute(f"INSERT INTO {table}({','.join(table_keys)}) VALUES("+"%s"+", %s"*(len(value)-1)+");", value)
+
+def delete_data_in_db(table, value):
     """Takes in a name of a table and value.
     Deletes a row with id of a value
-    
+
     Args:
         table (str): name of a table
         value (dict): dict for a correct table
-    """    
+    """
     CURSOR.execute(f"DELETE FROM {table} WHERE id = '{value['id']}';")
-    
-def update_data_in_db(table,value):
+
+def update_data_in_db(table, value):
     """Takes in a name of a table and value.
     Updates every columns by values id.
 
     Args:
         table (str): name of a table
         value (dict): dict for a correct table
-    """    
+    """
     for k, v in value.items():
         if v == None:
             continue
         if type(v) == str:
             v = string_validity_checker(v)
-        CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
+        CURSOR.execute(
+            f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
 
 def take_tags_from_db_by_question_id(id):
-    """Searches the db's and looks for name of a tag of a question_id
+    """Searches the db's and looks for name of a tag with a question_id
 
     Args:
         id (int): question_id number
 
     Returns:
         list: list of dicts
-    """    
+    """
     CURSOR.execute(f"SELECT tag_id FROM question_tag WHERE question_id = {id}")
     data = CURSOR.fetchall()
     if data == []:
         return []
     tag_id = [str(k.get('tag_id')) for k in data]
-    CURSOR.execute(f"SELECT * FROM tag WHERE id IN ({', '.join(tag_id)}) ORDER BY name")
+    CURSOR.execute(
+        f"SELECT * FROM tag WHERE id IN ({', '.join(tag_id)}) ORDER BY name")
     return CURSOR.fetchall()
-  
+
 def read_from_db(table, where_condition, column='*'):
     """Takes in table, where_condition, column
     to write select querry in db e.g.
     SELECT columnt FROM table WHERE where_condition.
     everytinh must be correct in string
-    
+
     Args:
         table (str): name of a table
         where_condition (str): str of after where condition
@@ -107,11 +109,11 @@ def read_from_db(table, where_condition, column='*'):
 
     Returns:
         list: list of dicts
-    """    
+    """
     CURSOR.execute(f"SELECT {column} FROM {table} WHERE {where_condition}")
     return CURSOR.fetchall()
-    
-def sort_db_by_order(table,order_by,order_direction):
+
+def sort_db_by_order(table, order_by, order_direction):
     """Sorts the table depending on a button urser proviedes
 
     Args:
@@ -121,8 +123,9 @@ def sort_db_by_order(table,order_by,order_direction):
 
     Returns:
         list: list of sorted dicts
-    """    
-    CURSOR.execute(f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
+    """
+    CURSOR.execute(
+        f"SELECT * FROM {table} ORDER BY {order_by} {order_direction};")
     return CURSOR.fetchall()
 
 def search_db_by_string(text, order_by=None, order_direction=None):
@@ -137,8 +140,9 @@ def search_db_by_string(text, order_by=None, order_direction=None):
         list: list of dicts
     """
     # Handling empty orders
-    if order_by == None: order_by,order_direction = ('id','asc')
-    text = text.lower()    
+    if order_by == None:
+        order_by, order_direction = ('id', 'asc')
+    text = text.lower()
     CURSOR.execute(f""" SELECT DISTINCT question.id, question.title, question.submission_time, question.message,
                         question.view_number, question.vote_number
                         FROM question LEFT JOIN answer ON question.id=answer.question_id WHERE LOWER(question.title) LIKE '%{text}%'
@@ -146,12 +150,12 @@ def search_db_by_string(text, order_by=None, order_direction=None):
                         ORDER BY {order_by} {order_direction};""")
     return CURSOR.fetchall()
 
-def top_five_latest_question_from_db():
+def five_latest_question_from_db():
     """Return 5 latest question
 
     Returns:
         list: list of dicts
-    """    
-    CURSOR.execute(f"SELECT question.title, question.message FROM question ORDER BY submission_time desc LIMIT 5")
+    """
+    CURSOR.execute(
+        f"SELECT question.title, question.message FROM question ORDER BY submission_time desc LIMIT 5")
     return CURSOR.fetchall()
-
