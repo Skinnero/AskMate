@@ -2,6 +2,8 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from os import path, environ
 from dotenv import load_dotenv
+
+# Load .env
 load_dotenv()
 
 # DB Table names
@@ -13,6 +15,7 @@ QUESTION_TAG = 'question_tag'
 
 # Image folder
 IMAGE_DATA = path.join('static', 'images')
+ALLOWED_EXTENSIONS = {'txt','jpg','png','jpeg'}
 
 # Enviroment data
 DATABASE = environ.get('DATABASE')

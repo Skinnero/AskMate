@@ -1,5 +1,8 @@
 from datetime import datetime
- 
+from werkzeug.utils import secure_filename
+from connection import IMAGE_DATA, ALLOWED_EXTENSIONS
+from os import path
+
 def prepare_answer_before_saving(data):
     """Prepares data for saving
     (Only for answer)
@@ -66,3 +69,32 @@ def string_validity_checker(text):
         str: valid string
     """    
     return text.replace("'", "''")
+
+def adding_valid_image_path(image_name:str):
+    """Takes in an image name and checks if
+    it contains something, if yes, then saves it
+    onto server and returns it's string
+
+    Args:
+        image_name (str): name of a file from request
+
+    Returns:
+        str: secure filename
+    """ 
+    if image_name.filename != '' and check_for_valid_extensions(image_name.filename):
+        secure_image_name = secure_filename(image_name.filename)
+        image_name.save(path.join(IMAGE_DATA, secure_image_name))
+        return secure_image_name
+    return image_name.filename
+
+def check_for_valid_extensions(image_name):
+    """Checks if extension is allowed
+
+    Args:
+        image_name (str): name of a file
+
+    Returns:
+        bool: True if is allowed else False
+    """    
+    return '.' in image_name and image_name.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    

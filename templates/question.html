@@ -1,63 +1,97 @@
 {% extends "index.html" %}
 {% block content %}
-        <h1>{{ question['title'] }}</h1>
-        {% for tag in tags %}
-            <h3 style="text-align:center;">#{{ tag['name'] }} <a href="{{url_for('question_api.route_question_delete_tag',question_id = question['id'], tag_id = tag['id'])}}">[x]</a></h3>
-        {% endfor %}
-        <p><a href="{{url_for('question_api.route_question_add_tag', question_id = question['id'])}}">Add a Tag</a></p>
-        <p>{{ question['message'] }}</p>
-        <p><img src="{{url_for('route_image', filename=question['image'])}}" onerror='this.style.display = "none"'></p>
-        <p>Vote Number: {{question['vote_number']}}</p>
-        <td style="width:10px"><a href="{{url_for('question_api.route_question_vote_up', question_id=question['id'], )}}"><button>+</button></a></td>
-        <td style="width:10px"><a href="{{url_for('question_api.route_question_vote_down', question_id=question['id'], )}}"><button>-</button></a></td>
-        <p>Viewed: {{question['view_number']}}</p>
-        <p><a href="{{url_for('answer_api.route_answer_add', id=question['id'])}}">Add Answer</a></p>
-        <p><a href="{{url_for('question_api.route_question_delete', id=question['id'])}}">Delete Question</a></p>
-        <p><a href="{{url_for('question_api.route_question_edit', id=question['id'])}}">Edit Question</a></p>
-        <p><a href="{{url_for('comment_api.route_comment_add_to_question',question_id = question['id'])}}">Add a comment</a></p>
+<h1 class="Title_style1" style="text-align:center;">{{ question['title'] }} </h1>
+{% for tag in tags %}
+<h3>#{{ tag['name'] }} <a
+        href="{{url_for('question_api.question_delete_tag',question_id = question['id'], tag_id = tag['id'])}}">[x]</a>
+</h3>
+{% endfor %}
+<p><a href="{{url_for('question_api.question_add_tag', question_id = question['id'])}}" class="button">Add a
+        Tag</a></p>
+<p class="question_style"><span style="font-size: 30px">{{ question['message'] }}</span></p>
+
 <br>
-        
-        {% for comment in comments %}
-        {% if comment['question_id'] == question['id'] %}
-        <table style="width: 100%;">
-            <tr>
-                <th><a href="{{url_for('comment_api.route_comment_delete', comment_id = comment['id'])}}">Delete a comment</a></th>
-                <th>{{comment['message']}}</th>
-                <th>{{comment['submission_time']}}</th>
-                <th>{{comment['edited_count']}}</th>
-            </tr>
-        </table>
-        {% endif %}
-        {% endfor %}
+
+<p class="button"><a href="{{url_for('answer_api.answer_add', id=question['id'])}}">Add Answer</a></p>
+<p class="button"><a href="{{url_for('question_api.question_delete', id=question['id'])}}">Delete Question</a></p>
+<p class="button"><a href="{{url_for('question_api.question_edit', id=question['id'])}}">Edit Question</a></p>
+<p class="button"><a href="{{url_for('comment_api.comment_add_to_question',question_id = question['id'])}}">Add a
+        comment</a></p>
+
+<p><img src="{{url_for('image', filename=question['image'])}}" onerror='this.style.display = "none"'></p>
+<p class="vote_style">Vote Number: {{question['vote_number']}}</p>
+
+<td class="button1"><a
+        href="{{url_for('question_api.question_vote_up', question_id=question['id'], )}}"><button>+</button></a>
+</td>
+<td class="button1"><a
+        href="{{url_for('question_api.question_vote_down', question_id=question['id'], )}}"><button>-</button></a>
+</td>
+
+<p class="vote_style">Viewed: {{question['view_number']}}</p>
+
 <br>
-    <table>
+
+
+{% for comment in comments %}
+{% if comment['question_id'] == question['id'] %}
+
+
+
+
+<table style="width: 100%;">
+    <tr>
+        <th class="button"><a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete
+                a comment</a></th>
+        <th class="button">{{comment['message']}}</th>
+        <th class="button">{{comment['submission_time']}}</th>
+        <th class="button">{{comment['edited_count']}}</th>
+    </tr>
+</table>
+{% endif %}
+{% endfor %}
+<br>
+<table>
     {% for answer in answers %}
+
     {% if answer['question_id'] == question['id'] %}
-        <tr>
-            <td><a href="{{url_for('answer_api.route_answer_delete', answer_id=answer['id'])}}">Delete</a></td>
-            <td><a href="{{url_for('answer_api.route_answer_edit', answer_id=answer['id'])}}">Edit</a></td>
-            <td>{{ answer['message'] }}</td>
-            <td><img src="{{url_for('route_image', filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
-            <td>{{ answer['vote_number']}}</td>
-            <td style="width:10px"><a href="{{url_for('answer_api.route_answer_vote_up', answer_id=answer['id'], )}}"><button>+</button></a></td>
-            <td style="width:10px"><a href="{{url_for('answer_api.route_answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a></td>
-        </tr>
-        <tr>
-            <td><a href="{{url_for('comment_api.route_comment_add_to_answer',answer_id = answer['id'])}}">Add a comment</a></td>
-        </tr>
+
+    <tr>
+        <td class="answer_style" style="font-size: 30px">{{ answer['message'] }}</td>
+
+
+        <td class="button"><a href="{{url_for('answer_api.answer_delete', answer_id=answer['id'])}}">Delete</a>
+        </td>
+        <td class="button"><a href="{{url_for('answer_api.answer_edit', answer_id=answer['id'])}}">Edit</a></td>
+
+        <td><img src="{{url_for('image', filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
+        <td>{{ answer['vote_number']}}</td>
+        <td class="button1"><a
+                href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], )}}"><button>+</button></a>
+        </td>
+        <td class="button1"><a
+                href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a>
+        </td>
+    </tr>
+    <tr>
+        <td class="button"><a href="{{url_for('comment_api.comment_add_to_answer',answer_id = answer['id'])}}">Add
+                a comment</a></td>
+    </tr>
     {% for comment in comments %}
     {% if comment['answer_id'] == answer['id'] %}
-        <tr>
-            <td><a href="{{url_for('comment_api.route_comment_delete', comment_id = comment['id'])}}">Delete a comment</a></td>
-            <td><a href="{{url_for('comment_api.route_comment_edit', comment_id = comment['id'])}}">Edit a comment</a></td>
-            <td>{{comment['message']}}</td>
-            <td>{{comment['submission_time']}}</td>
-            <td>{{comment['edited_count']}}</td>
-        </tr>
+    <tr>
+        <td class="button"><a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete
+                a comment</a></td>
+        <td class="button"><a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a
+                comment</a></td>
+        <td class="comment_style">{{comment['message']}}</td>
+        <td class="comment_style">{{comment['submission_time']}}</td>
+        <td class="comment_style">{{comment['edited_count']}}</td>
+    </tr>
     {% endif %}
     {% endfor %}
-        
+
     {% endif %}
     {% endfor %}
-    </table>
-{% endblock %}
+
+    {% endblock %}
