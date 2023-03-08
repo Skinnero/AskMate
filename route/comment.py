@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for, render_template
+from flask import Blueprint, request, redirect, url_for, render_template, session
 from util import prepare_comment_before_saving
 from data_handler import insert_data_into_db, read_single_row_from_db_by_id, delete_data_in_db, update_data_in_db
 from connection import COMMENT, ANSWER
@@ -14,18 +14,22 @@ def comment_add_to_question(question_id):
     else:
         data = request.form.to_dict()
         data['question_id'] = question_id
+        data['user_id'] = session['user']['id']
         comment_data = prepare_comment_before_saving(data)
         insert_data_into_db(COMMENT, comment_data)
         return redirect(url_for('question_api.question', id=question_id))
 
 
-@comment_api.route('/answer/<answer_id>/add-comment', methods=["GET", "POST"])
-def comment_add_to_answer(answer_id):
+@comment_api.route('/answer/<answer_id>/<question_id>/add-comment', methods=["GET", "POST"])
+def comment_add_to_answer(answer_id,question_id):
     if request.method == "GET":
-        return render_template("/add_comment_to_answer.html", answer_id=answer_id)
+        return render_template("/add_comment_to_answer.html", answer_id=answer_id, question_id=question_id)
     else:
+        print(question_id)
         data = request.form.to_dict()
         data['answer_id'] = answer_id
+        data['user_id'] = session['user']['id']
+        data['question_id'] = question_id
         comment_data = prepare_comment_before_saving(data)
         answer_data = read_single_row_from_db_by_id(ANSWER, answer_id)
         insert_data_into_db(COMMENT, comment_data)

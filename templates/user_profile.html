@@ -1,0 +1,68 @@
+{%extends 'index.html'%}
+{%block content%}
+    <table style="width: 100%;">
+        <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Registration date</th>
+            <th>Number of asked questions</th>
+            <th>Number of asked answers </th>
+            <th>Number of asked comments </th>
+            <th>Reputation</th>
+        </tr>
+        <tr style="text-align: center;">
+            <td>{{session['user']['id']}}</td>
+            <td>{{session['user']['user_name']}}</td>
+            <td>{{session['user']['submission_time']}}</td>
+            <td>{{users_count['question_count']}}</td>
+            <td>{{users_count['answer_count']}}</td>
+            <td>{{users_count['comment_count']}}</td>
+            <td>{{session['user']['reputation']}}</td>
+        </tr>
+    </table>
+    <br>
+    <h1>QUESTIONS</h1>
+    <table style="width: 100%;">
+        <tr>
+            <th>Title</th>
+            <th>Question</th>
+            <th>Submission Time</th>
+        </tr>
+        {%for question in questions%}
+        <tr style="text-align: center;">
+            <td><a href="{{url_for('question_api.question', id = question['id'])}}">{{question['title']}}</a></td>
+            <td>{{question['message']}}</td>
+            <td>{{question['submission_time']}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+    <br>
+    <h1>ANSWERS</h1>
+    <table style="width: 100%;">
+        <tr>
+            <th>Message</th>
+            <th>Submission Time</th>
+        </tr>
+        {%for answer in answers%}
+        <tr style="text-align: center;">
+            <td><a href="{{url_for('question_api.question', id = answer['question_id'])}}">{{answer['message']}}</a></td> 
+            <td>{{answer['submission_time']}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+    <br>
+    <h1>COMMENTS</h1>
+    <table style="width: 100%;">
+        <tr>
+            <th>Message</th>
+            <th>Submission Time</th>
+        </tr>
+        {%for comment in comments%}
+        <tr style="text-align: center;">
+            <td><a href="{{url_for('question_api.question', id = comment['question_id'])}}">{{comment['message']}}</a></td> 
+            <td>{{comment['submission_time']}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+
+{%endblock%}

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, url_for, redirect
+from flask import Blueprint, request, render_template, url_for, redirect, session
 from util import prepare_answer_before_saving, adding_valid_image_path
 from connection import ANSWER, QUESTION
 from data_handler import insert_data_into_db, delete_data_in_db, update_data_in_db, read_single_row_from_db_by_id
@@ -14,6 +14,7 @@ def answer_add(id):
     else:
         data = request.form.to_dict()
         data['question_id'] = id
+        data['user_id'] = session['user']['id']
         data['image'] = adding_valid_image_path(request.files['image'])
         data = prepare_answer_before_saving(data)
         insert_data_into_db(ANSWER, data)

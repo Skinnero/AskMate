@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+{% block content %}
+<table style="width: 100%;">
+    <br>
+    <tr>
+        <th>Username</th>
+        <th>Registration date</th>
+        <th>Number of asked questions</th>
+        <th>Number of asked answers </th>
+        <th>Number of asked comments </th>
+        <th>Reputation</th>
+    </tr>
+
+    {%for user,user_data in users%}
+    <tr style="text-align: center;">
+        <td>{{user['user_name']}}</td>
+        <td>{{user['submission_time']}}</td>
+        <td>{{user_data['question_count']}}</td>
+        <td>{{user_data['answer_count']}}</td>
+        <td>{{user_data['comment_count']}}</td>
+        <td>{{user['reputation']}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{% endblock %}

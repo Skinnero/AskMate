@@ -7,6 +7,7 @@ from connection import QUESTION, IMAGE_DATA
 from data_handler import read_all_data_from_db, sort_db_by_order, search_db_by_string, five_latest_question_from_db
 
 app = Flask(__name__, template_folder='templates', static_folder='static', )
+app.secret_key = b'secret_code'
 app.register_blueprint(question_api)
 app.register_blueprint(answer_api)
 app.register_blueprint(comment_api)

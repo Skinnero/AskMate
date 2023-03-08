@@ -46,11 +46,12 @@ CREATE TABLE answer (
 DROP TABLE IF EXISTS public.users;
 CREATE TABLE users (
     id serial NOT NULL,
-    username text,
-    email text,
+    user_name text UNIQUE,
+    email text UNIQUE,
     password text,
+    submission_time timestamp,
     reputation integer
-    );
+);
 
 DROP TABLE IF EXISTS public.comment;
 CREATE TABLE comment (
@@ -63,7 +64,6 @@ CREATE TABLE comment (
     user_id integer NOT NULL
 );
 
-
 DROP TABLE IF EXISTS public.question_tag;
 CREATE TABLE question_tag (
     question_id integer NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE question_tag (
 DROP TABLE IF EXISTS public.tag;
 CREATE TABLE tag (
     id serial NOT NULL,
-    name text
+    name text UNIQUE
 );
 
 ALTER TABLE ONLY answer
@@ -115,8 +115,12 @@ ALTER TABLE ONLY comment
 ALTER TABLE ONLY question
     ADD CONSTRAINT fk_question_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
--- INSERT INTO question VALUES (1, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', 'None');
--- INSERT INTO question VALUES (2, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
+INSERT INTO users VALUES (1, 'kacpi', 'kacpi@wp.pl', '$2b$12$Kf3wEeR8Iznd1Dqlbp5NC.nh9YfhyK/zTZsewh.pjYPjTRo2N5AgW', 2023-03-08 15:41:46 0);
+INSERT INTO users VALUES (2, 'Tomek', 'tomki@gg.pl', '$2b$12$N0HtrEEqfb5cnMcETTHd0eU6OJoXzLrKTRUQ0veF9Il559efj5Z4O', 2027-03-08 15:41:46, 50);
+
+
+INSERT INTO question VALUES (1, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', 'None', 1);
+INSERT INTO question VALUES (2, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
 
 -- I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -124,12 +128,12 @@ ALTER TABLE ONLY question
 
 -- jquery
 -- booklet
--- app.js (bundled file with webpack, including jquery)', 'None');
+-- app.js (bundled file with webpack, including jquery)', 'None', 2);
 -- INSERT INTO question VALUES (3, '2017-05-01 10:41:00', 1364, 57, 'Drawing canvas with an image picked with Cordova Camera Plugin', 'I''m getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I''m on IOS, it throws errors such as cross origin issue, or that I''m trying to use an unknown format.
 -- ', 'None');
 -- SELECT pg_catalog.setval('question_id_seq', 2, true);
 
--- INSERT INTO answer VALUES (1, '2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', 'None');
+INSERT INTO answer VALUES (1, '2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', 'None', 1);
 -- INSERT INTO answer VALUES (2, '2017-04-25 14:42:00', 35, 1, 'Look it up in the Python docs', 'None');
 -- SELECT pg_catalog.setval('answer_id_seq', 2, true);
 
@@ -137,11 +141,11 @@ ALTER TABLE ONLY question
 -- INSERT INTO comment VALUES (2, NULL, 1, 'I think you could use my_list = list() as well.', '2017-05-02 16:55:00');
 -- SELECT pg_catalog.setval('comment_id_seq', 2, true);
 
--- INSERT INTO tag VALUES (1, 'python');
+INSERT INTO tag VALUES (1, 'python');
 -- INSERT INTO tag VALUES (2, 'sql');
 -- INSERT INTO tag VALUES (3, 'css');
 -- SELECT pg_catalog.setval('tag_id_seq', 3, true);
 
--- INSERT INTO question_tag VALUES (1, 1);
+INSERT INTO question_tag VALUES (1, 1);
 -- INSERT INTO question_tag VALUES (2, 3);
 -- INSERT INTO question_tag VALUES (3, 3); 

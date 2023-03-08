@@ -1,7 +1,10 @@
-from flask import Blueprint, request, redirect, url_for, render_template
-from connection import ANSWER, QUESTION, COMMENT, QUESTION_TAG, TAG
+from flask import Blueprint, request, redirect, url_for, render_template, session
+from connection import ANSWER, QUESTION, COMMENT, QUESTION_TAG, TAG, USERS
 from util import prepare_question_before_saving, adding_valid_image_path
-from data_handler import read_all_data_from_db, insert_data_into_db, update_data_in_db, delete_data_in_db, read_single_row_from_db_by_id, take_tags_from_db_by_question_id, read_from_db
+from data_handler import read_all_data_from_db, insert_data_into_db, update_data_in_db, delete_data_in_db,\
+read_single_row_from_db_by_id, take_tags_from_db_by_question_id, read_specified_lines_from_db
+
+
 
 question_api = Blueprint('question_api', __name__)
 
@@ -11,10 +14,16 @@ def question(id):
     question_data = read_single_row_from_db_by_id(QUESTION, id)
     answers_data = read_all_data_from_db(ANSWER)
     comment_data = read_all_data_from_db(COMMENT)
+    user_name = read_single_row_from_db_by_id(USERS, question_data['user_id'])
     tag_data = take_tags_from_db_by_question_id(id)
     question_data['view_number'] += 1
     update_data_in_db(QUESTION, question_data)
-    return render_template("question.html", question=question_data, answers=answers_data, comments=comment_data, tags=tag_data)
+    return render_template("question.html",
+                           question=question_data,
+                           answers=answers_data,
+                           comments=comment_data,
+                           tags=tag_data,
+                           user_name=user_name['user_name'])
 
 
 @question_api.route("/add-question", methods=["GET", "POST"])
@@ -24,6 +33,7 @@ def question_add():
     else:
         data = request.form.to_dict()
         data['image'] = adding_valid_image_path(request.files['image'])
+        data['user_id'] = session['user']['id']
         data = prepare_question_before_saving(data)
         insert_data_into_db(QUESTION, data)
         question = read_all_data_from_db(QUESTION)
@@ -75,7 +85,8 @@ def question_add_tag(question_id):
     else:
         new_tag = request.form.to_dict()
         insert_data_into_db(TAG, new_tag)
-        new_tag_id = read_from_db(TAG, f"name=\'{new_tag['name']}\'", "id")
+        new_tag_id = read_specified_lines_from_db(
+            TAG, "name = ", new_tag['name'], "id")
         question_tag = {'question_id': question_id,
                         'tag_id': new_tag_id[0]['id']}
         insert_data_into_db(QUESTION_TAG, question_tag)
