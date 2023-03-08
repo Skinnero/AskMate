@@ -2,6 +2,24 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from connection import IMAGE_DATA, ALLOWED_EXTENSIONS
 from os import path
+import bcrypt
+
+def prepare_user_before_saving(data):
+    """Prepares data for saving
+    (Only for user)
+
+    Args:
+        data (dict): dict of changed data
+
+    Returns:
+        dict: prepared data to change
+    """    
+    return {
+            'username': data['user_name'],
+            'email': data['user_email'],
+            'password': data['user_password'],
+            'reputation': 0,
+                }
 
 def prepare_answer_before_saving(data):
     """Prepares data for saving
@@ -98,3 +116,17 @@ def check_for_valid_extensions(image_name):
     """    
     return '.' in image_name and image_name.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
     
+def create_password(password):
+    """Generate hashed password and returns it
+
+    Args:
+        password (str): str of user input
+
+    Returns:
+        str: str of password
+    """    
+    return bcrypt.hashpw(password.encode(),bcrypt.gensalt()).decode()
+
+def verify_password(password,hashed_password):
+    
+    return bcrypt.checkpw(password,hashed_password)

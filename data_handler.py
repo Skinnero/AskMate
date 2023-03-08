@@ -11,8 +11,8 @@ def catch_all_key_from_db(table):
     Returns:
         list: list of column names
     """
-    CURSOR.execute(f'SELECT * FROM {table}')
-    return [k for k in CURSOR.fetchone().keys() if k != 'id']
+    CURSOR.execute(f"SELECT * FROM {table} LIMIT 0")
+    return [k[0] for k in CURSOR.description if k[0] != 'id']
 
 def read_all_data_from_db(table):
     """Takes in a name of a table and returns all contents of it

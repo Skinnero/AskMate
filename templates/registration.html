@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{%block content%}
+<form action="{{url_for('user_api.registration')}}" method="POST">
+    <label for="user_email"> Email
+        <input type="text" name="user_email">
+    </label>
+    <br>
+    <label for="user_name"> Username
+        <input type="text" name="user_name">
+    </label>
+    <br>
+    <label for="user_password"> Password
+        <input type="password" name="user_password">
+    </label>
+    <br>
+    <input type="submit" value="Sign up">
+</form>
+{%endblock%}
