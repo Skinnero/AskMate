@@ -25,7 +25,7 @@ CREATE TABLE question (
     id serial NOT NULL,
     submission_time timestamp without time zone,
     view_number integer,
-    vote_number integer,
+    vote_number integer NOT NULL,
     title text,
     message text,
     image text,
@@ -36,11 +36,12 @@ DROP TABLE IF EXISTS public.answer;
 CREATE TABLE answer (
     id serial NOT NULL,
     submission_time timestamp without time zone,
-    vote_number integer,
+    vote_number integer NOT NULL,
     question_id integer,
     message text,
     image text,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    accepted integer NOT NULL
 );
 
 DROP TABLE IF EXISTS public.users;
@@ -51,6 +52,14 @@ CREATE TABLE users (
     password text,
     submission_time timestamp,
     reputation integer
+);
+
+DROP TABLE IF EXISTS public.users_vote;
+CREATE TABLE users_vote (
+    user_id integer NOT NULL,
+    voted integer NOT NULL,
+    question_id integer,
+    answer_id integer
 );
 
 DROP TABLE IF EXISTS public.comment;
@@ -115,8 +124,20 @@ ALTER TABLE ONLY comment
 ALTER TABLE ONLY question
     ADD CONSTRAINT fk_question_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY users_vote
+    ADD CONSTRAINT fk_users_vote_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY users_vote
+    ADD CONSTRAINT fk_question_vote_id FOREIGN KEY (user_id) REFERENCES question(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY users_vote
+    ADD CONSTRAINT fk_answer_vote_id FOREIGN KEY (user_id) REFERENCES answer(id) ON DELETE CASCADE;
+
 INSERT INTO users VALUES (1, 'kacpi', 'kacpi@wp.pl', '$2b$12$Kf3wEeR8Iznd1Dqlbp5NC.nh9YfhyK/zTZsewh.pjYPjTRo2N5AgW', 2023-03-08 15:41:46 0);
 INSERT INTO users VALUES (2, 'Tomek', 'tomki@gg.pl', '$2b$12$N0HtrEEqfb5cnMcETTHd0eU6OJoXzLrKTRUQ0veF9Il559efj5Z4O', 2027-03-08 15:41:46, 50);
+
+INSERT INTO users_vote VALUES (1,1,NULL,1);
+INSERT INTO users_vote VALUES (2,2,NULL,2);
 
 
 INSERT INTO question VALUES (1, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', 'None', 1);
@@ -133,8 +154,8 @@ INSERT INTO question VALUES (2, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading
 -- ', 'None');
 -- SELECT pg_catalog.setval('question_id_seq', 2, true);
 
-INSERT INTO answer VALUES (1, '2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', 'None', 1);
--- INSERT INTO answer VALUES (2, '2017-04-25 14:42:00', 35, 1, 'Look it up in the Python docs', 'None');
+INSERT INTO answer VALUES (1, '2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', 'None', 1, 0);
+INSERT INTO answer VALUES (2, '2017-04-25 14:42:00', 35, 1, 'Look it up in the Python docs', 'None',2,0);
 -- SELECT pg_catalog.setval('answer_id_seq', 2, true);
 
 -- INSERT INTO comment VALUES (1, 1, NULL, 'Please clarify the question as it is too vague!', '2017-05-01 05:49:00');

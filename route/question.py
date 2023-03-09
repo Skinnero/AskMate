@@ -1,13 +1,13 @@
 from flask import Blueprint, request, redirect, url_for, render_template, session
 from connection import ANSWER, QUESTION, COMMENT, QUESTION_TAG, TAG, USERS
-from util import prepare_question_before_saving, adding_valid_image_path
+from util import prepare_question_before_saving, adding_valid_image_path, calculate_user_reputation
 from data_handler import read_all_data_from_db, insert_data_into_db, update_data_in_db, delete_data_in_db,\
-read_single_row_from_db_by_id, take_tags_from_db_by_question_id, read_specified_lines_from_db
+read_single_row_from_db_by_id, take_tags_from_db_by_question_id, read_specified_lines_from_db,\
+read_necessery_data_from_db_for_reputation_count
 
 
 
 question_api = Blueprint('question_api', __name__)
-
 
 @question_api.route("/question/<id>", methods=["GET"])
 def question(id):
@@ -67,6 +67,7 @@ def question_vote_up(question_id):
     data = read_single_row_from_db_by_id(QUESTION, question_id)
     data['vote_number'] += 1
     update_data_in_db(QUESTION, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
     return redirect(url_for('question_api.question', id=question_id))
 
 
@@ -75,6 +76,7 @@ def question_vote_down(question_id):
     data = read_single_row_from_db_by_id(QUESTION, question_id)
     data['vote_number'] -= 1
     update_data_in_db(QUESTION, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
     return redirect(url_for('question_api.question', id=question_id))
 
 

@@ -13,6 +13,7 @@ COMMENT = 'comment'
 TAG = 'tag'
 QUESTION_TAG = 'question_tag'
 USERS = 'users'
+USERS_VOTE = 'users_vote'
 
 # Image folder
 IMAGE_DATA = path.join('static', 'images')

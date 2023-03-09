@@ -32,14 +32,14 @@
 <p class="vote_style">
         Vote Number: {{question['vote_number']}}
 </p>
-
+{%if question['user_id'] != session['user']['id']%}
 <td class="button1">
         <a href="{{url_for('question_api.question_vote_up', question_id=question['id'], )}}"><button>+</button></a>
 </td>
 <td class="button1">
         <a href="{{url_for('question_api.question_vote_down', question_id=question['id'], )}}"><button>-</button></a>
 </td>
-
+{%endif%}
 <p class="vote_style">Viewed: {{question['view_number']}}
 
 </p>
@@ -82,30 +82,49 @@
     {% for answer in answers %}
     {% if answer['question_id'] == question['id'] %}
 
-    <tr>
-        <td class="answer_style" style="font-size: 30px">{{ answer['message'] }}</td>
-        {%if answer['user_id'] == session['user']['id']%}
-        <td class="button">
-                <a href="{{url_for('answer_api.answer_delete', answer_id=answer['id'])}}">Delete</a>
-        </td>
-        <td class="button">
-                <a href="{{url_for('answer_api.answer_edit', answer_id=answer['id'])}}">Edit</a>
-        </td>
-        {%endif%}
-        <td><img src="{{url_for('image', filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
-        <td>{{ answer['vote_number']}}</td>
-        <td class="button1"><a
-                href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], )}}"><button>+</button></a>
-        </td>
-        <td class="button1"><a
-                href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a>
-        </td>
-    </tr>
-    <tr>
-        <td class="button">
-                <a href="{{url_for('comment_api.comment_add_to_answer', question_id = question['id'], answer_id = answer['id'])}}">Add a comment</a>
-        </td>
-    </tr>
+        <tr>
+                {%if question['user_id'] == session['user']['id'] and answer['accepted'] == 0 %}
+                        <td class="button">
+                                <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}">Accept an answer</a>
+                        </td>
+                {%endif%}
+                {%if answer['user_id'] == session['user']['id'] and answer['accepted'] == 1 %}
+                        <td class="button">
+                                <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}">Accept an answer</a>
+                        </td>
+                {%endif%}
+                {%if answer['accepted'] == 2 %}
+                        <td class="button">
+                                ANSWER ACCEPTED!
+                        </td>
+                {%endif%}
+                        <td class="answer_style" style="font-size: 30px">{{ answer['message'] }}</td>
+                {%if answer['user_id'] == session['user']['id']%}
+                        <td class="button">
+                                <a href="{{url_for('answer_api.answer_delete', answer_id=answer['id'])}}">Delete</a>
+                        </td>
+                        <td class="button">
+                                <a href="{{url_for('answer_api.answer_edit', answer_id=answer['id'])}}">Edit</a>
+                        </td>
+                {%endif%}
+                        <td><img src="{{url_for('image', filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
+                        <td>{{ answer['vote_number']}}</td>
+                {%if answer['user_id'] != session['user']['id']%}
+
+                        <td class="button1">
+                                <a href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], )}}"><button>+</button></a>
+                        </td>
+                        <td class="button1">
+                                <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a>
+                        </td>
+
+                {%endif%}
+        </tr>
+        <tr>
+                <td class="button">
+                        <a href="{{url_for('comment_api.comment_add_to_answer', question_id = question['id'], answer_id = answer['id'])}}">Add a comment</a>
+                </td>
+        </tr>
     {% for comment in comments %}
     {% if comment['answer_id'] == answer['id'] %}
     <tr>

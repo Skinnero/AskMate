@@ -62,6 +62,7 @@ def insert_data_into_db(table, value):
     except errors.UniqueViolation:
         return False
 
+
 def delete_data_in_db(table, value):
     """Takes in a name of a table and value.
     Deletes a row with id of a value
@@ -81,13 +82,16 @@ def update_data_in_db(table, value):
         table (str): name of a table
         value (dict): dict for a correct table
     """
-    for k, v in value.items():
-        if v == None:
-            continue
-        if type(v) == str:
-            v = string_validity_checker(v)
-        CURSOR.execute(
-            f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
+    if type(value) != list:
+        for k, v in value.items():
+            if v == None:
+                continue
+            if type(v) == str:
+                v = string_validity_checker(v)
+            CURSOR.execute(f"UPDATE {table} SET {k} = '{v}' WHERE id = {value['id']}")
+    else:
+        for data in value:
+            update_data_in_db(table, data)
 
 
 def take_tags_from_db_by_question_id(id):
@@ -175,10 +179,12 @@ def five_latest_question_from_db():
     Returns:
         list: list of dicts
     """
-    CURSOR.execute(f"SELECT question.title, question.message FROM question ORDER BY submission_time desc LIMIT 5")
+    CURSOR.execute(
+        f"SELECT question.title, question.message FROM question ORDER BY submission_time desc LIMIT 5")
     return CURSOR.fetchall()
 
-def count_question_answer_comment_by_user(where=''):
+
+def count_question_answer_comment_from_db_by_user(where=''):
     """Return count of question, answer and comment by user.
     You can provide where parametr if specified needed.
 
@@ -192,11 +198,24 @@ def count_question_answer_comment_by_user(where=''):
     CURSOR.execute(f"""
                         SELECT DISTINCT users.id user_name, COUNT(DISTINCT question.id) AS question_count,
                         COUNT(DISTINCT answer.id) AS answer_count, COUNT(DISTINCT comment.id) AS comment_count 
-                        FROM users LEFT JOIN question ON
-                        users.id=question.user_id 
+                        FROM users LEFT JOIN question ON users.id=question.user_id 
                         LEFT JOIN answer ON users.id=answer.user_id 
                         LEFT JOIN comment ON users.id=comment.user_id
                         {where}
                         GROUP BY user_name, users.id ORDER BY users.id 
                         """)
+    return CURSOR.fetchall()
+
+
+def read_necessery_data_from_db_for_reputation_count():
+
+    CURSOR.execute("""
+                        SELECT users.id, SUM(DISTINCT CASE WHEN question.vote_number > 0 THEN question.vote_number ELSE 0 END) AS question_vote_up,
+                        SUM(DISTINCT CASE WHEN question.vote_number < 0 THEN question.vote_number ELSE 0 END) AS question_vote_down,
+                        SUM(DISTINCT CASE WHEN answer.vote_number > 0 THEN answer.vote_number ELSE 0 END) AS answer_vote_up,
+                        SUM(CASE WHEN answer.vote_number < 0 THEN answer.vote_number ELSE 0 END) AS answer_vote_down,
+                        COUNT(DISTINCT CASE WHEN answer.accepted = 2 THEN answer.accepted ELSE 0 END) AS answer_accepted
+                        FROM users LEFT JOIN question ON users.id=question.user_id LEFT JOIN answer ON users.id=answer.user_id GROUP BY users.id;
+                        """)
+
     return CURSOR.fetchall()

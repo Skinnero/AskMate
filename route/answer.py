@@ -1,7 +1,8 @@
 from flask import Blueprint, request, render_template, url_for, redirect, session
-from util import prepare_answer_before_saving, adding_valid_image_path
-from connection import ANSWER, QUESTION
-from data_handler import insert_data_into_db, delete_data_in_db, update_data_in_db, read_single_row_from_db_by_id
+from util import prepare_answer_before_saving, adding_valid_image_path, calculate_user_reputation
+from connection import ANSWER, QUESTION, USERS
+from data_handler import insert_data_into_db, delete_data_in_db, update_data_in_db, read_single_row_from_db_by_id,\
+read_necessery_data_from_db_for_reputation_count
 
 answer_api = Blueprint('answer_api', __name__)
 
@@ -47,6 +48,7 @@ def answer_vote_up(answer_id):
     data = read_single_row_from_db_by_id(ANSWER, answer_id)
     data['vote_number'] += 1
     update_data_in_db(ANSWER, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
     return redirect(url_for("question_api.question", id=data['question_id']))
 
 
@@ -55,4 +57,13 @@ def answer_vote_down(answer_id):
     data = read_single_row_from_db_by_id(ANSWER, answer_id)
     data['vote_number'] -= 1
     update_data_in_db(ANSWER, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
+    return redirect(url_for("question_api.question", id=data['question_id']))
+
+@answer_api.route("/answer/<answer_id>/accept")
+def answer_accept(answer_id):
+    data = read_single_row_from_db_by_id(ANSWER,answer_id)
+    data['accepted'] += 1
+    update_data_in_db(ANSWER, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
     return redirect(url_for("question_api.question", id=data['question_id']))

@@ -39,7 +39,8 @@ def prepare_answer_before_saving(data):
         'question_id': data['question_id'],
         'message': data['message'],
         'image': data['image'],
-        'user_id': data['user_id']
+        'user_id': data['user_id'],
+        'accepted': 0
     }
 
 
@@ -140,5 +141,32 @@ def create_password(password):
 
 
 def verify_password(password, hashed_password):
+    """Takes in user password, and hashed password from db
+    abd checks it if it's the same
 
+    Args:
+        password (str): already encoded string
+        hashed_password (str): already encoded string
+
+    Returns:
+        bool: True if it's the same otherwise False
+    """    
     return bcrypt.checkpw(password, hashed_password)
+
+
+def calculate_user_reputation(data):
+
+    for user in data:
+        user['question_vote_up'] *= 5
+        user['question_vote_down'] *= 2
+        user['answer_vote_up'] *= 10
+        user['answer_vote_down'] *= 2
+        user['answer_accepted'] *= 15
+        user['reputation'] = sum([v for k, v in user.items() if k != 'user_name'])
+        user.pop('question_vote_up')
+        user.pop('question_vote_down')
+        user.pop('answer_vote_up')
+        user.pop('answer_vote_down')
+        user.pop('answer_accepted')
+    print(data)
+    return data

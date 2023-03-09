@@ -3,7 +3,7 @@ from route.question import question_api
 from route.answer import answer_api
 from route.comment import comment_api
 from route.user import user_api
-from connection import QUESTION, IMAGE_DATA
+from connection import QUESTION, IMAGE_DATA, TAG
 from data_handler import read_all_data_from_db, sort_db_by_order, search_db_by_string, five_latest_question_from_db
 
 app = Flask(__name__, template_folder='templates', static_folder='static', )
@@ -46,6 +46,11 @@ def search():
     questions = search_db_by_string(search, request.args.get(
         "order_by"), request.args.get("order_direction"))
     return render_template("search.html", questions=questions, search=search)
+
+@app.route('/tags')
+def tags():
+    tags = read_all_data_from_db(TAG)
+    return render_template("tags.html", tags=tags)
 
 if __name__ == "__main__":
     app.run(
