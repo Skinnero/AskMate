@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from util import create_password, prepare_user_before_saving, verify_password
-from data_handler import insert_data_into_db, read_specified_lines_from_db, read_all_data_from_db,\
-count_question_answer_comment_from_db_by_user, sort_db_by_order
+from data_handler import insert_data_into_db, read_specified_lines_from_db, count_question_answer_comment_from_db_by_user
 from connection import USERS, QUESTION, ANSWER, COMMENT
 
 
