@@ -184,7 +184,7 @@ def five_latest_question_from_db():
     return CURSOR.fetchall()
 
 
-def count_question_answer_comment_from_db_by_user(where=''):
+def count_question_answer_comment_from_db_by_user(order_by = 'user_name', order_direction = '', where=''):
     """Return count of question, answer and comment by user.
     You can provide where parametr if specified needed.
 
@@ -196,13 +196,13 @@ def count_question_answer_comment_from_db_by_user(where=''):
         list: list of dicts
     """
     CURSOR.execute(f"""
-                        SELECT DISTINCT users.id user_name, COUNT(DISTINCT question.id) AS question_count,
-                        COUNT(DISTINCT answer.id) AS answer_count, COUNT(DISTINCT comment.id) AS comment_count 
+                        SELECT DISTINCT user_name, users.submission_time, COUNT(DISTINCT question.id) AS question_count,
+                        COUNT(DISTINCT answer.id) AS answer_count, COUNT(DISTINCT comment.id) AS comment_count, reputation
                         FROM users LEFT JOIN question ON users.id=question.user_id 
                         LEFT JOIN answer ON users.id=answer.user_id 
                         LEFT JOIN comment ON users.id=comment.user_id
                         {where}
-                        GROUP BY user_name, users.id ORDER BY users.id 
+                        GROUP BY user_name, users.id ORDER BY {order_by} {order_direction};
                         """)
     return CURSOR.fetchall()
 

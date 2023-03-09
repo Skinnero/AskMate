@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from util import create_password, prepare_user_before_saving, verify_password
 from data_handler import insert_data_into_db, read_specified_lines_from_db, read_all_data_from_db,\
-    count_question_answer_comment_from_db_by_user
+count_question_answer_comment_from_db_by_user, sort_db_by_order
 from connection import USERS, QUESTION, ANSWER, COMMENT
 
 
@@ -47,10 +47,10 @@ def login():
 @user_api.route('/user')
 def user():
 
-    users = read_all_data_from_db(USERS)
-    users_count = count_question_answer_comment_from_db_by_user()
-    users = (zip(users, users_count))
-    return render_template('user.html', users=users, users_count=users_count)
+    users = count_question_answer_comment_from_db_by_user()
+    if request.args.get("order_by") != None and request.args.get("order_direction") != None:
+        users = count_question_answer_comment_from_db_by_user(order_by=request.args.get('order_by'),order_direction=request.args.get('order_direction'))
+    return render_template('user.html', users=users)
 
 
 @user_api.route('/user/<user_id>')
@@ -59,7 +59,7 @@ def user_profile(user_id):
     questions = read_specified_lines_from_db(QUESTION, 'user_id = ', user_id)
     answers = read_specified_lines_from_db(ANSWER, 'user_id = ', user_id)
     comments = read_specified_lines_from_db(COMMENT, 'user_id = ', user_id)
-    users_count = count_question_answer_comment_from_db_by_user(f"WHERE users.id = '{user_id}'")[0]
+    users_count = count_question_answer_comment_from_db_by_user(where=f"WHERE users.id = '{user_id}'")[0]
     return render_template('user_profile.html', questions=questions, answers=answers, comments=comments, users_count=users_count)
 
 

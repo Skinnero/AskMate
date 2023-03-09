@@ -19,11 +19,9 @@ def question(id):
         session['question_vote'] = []
     question_data = read_single_row_from_db_by_id(QUESTION, id)
     answers_data = [a for a in read_all_data_from_db(ANSWER) if a['question_id'] == int(id)]
-    print(answers_data)
     comment_data = read_all_data_from_db(COMMENT)
     user_name = read_single_row_from_db_by_id(USERS, question_data['user_id'])
     tag_data = take_tags_from_db_by_question_id(id)
-    print(session['answer_vote'])
     question_data['view_number'] += 1
     update_data_in_db(QUESTION, question_data)
     return render_template("question.html",

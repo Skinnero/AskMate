@@ -42,11 +42,19 @@
         <tr>
             <th>Message</th>
             <th>Submission Time</th>
+            <th>Answer to accept</th>
         </tr>
         {%for answer in answers%}
         <tr style="text-align: center;">
             <td><a href="{{url_for('question_api.question', id = answer['question_id'])}}">{{answer['message']}}</a></td> 
             <td>{{answer['submission_time']}}</td>
+            {%if answer['accepted'] == 1%}
+            <td style="color: blue">You are requested to accept your answer</td>
+            {%elif answer['accepted'] == 2%}
+            <td style="color: green">Your answer is accepted</td>
+            {%else%}
+            <td>Nothing to attend</td>
+            {%endif%}
         </tr>
         {%endfor%}
     </table>

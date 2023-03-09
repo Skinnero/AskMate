@@ -3,21 +3,51 @@
 <table style="width: 100%;">
     <br>
     <tr>
-        <th>Username</th>
-        <th>Registration date</th>
-        <th>Number of asked questions</th>
-        <th>Number of asked answers </th>
-        <th>Number of asked comments </th>
-        <th>Reputation</th>
+        <th>Username
+            <a href="{{url_for('user_api.user', order_by = 'user_name', order_direction = 'asc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
+            <a href="{{url_for('user_api.user', order_by = 'user_name', order_direction = 'desc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
+        </th>
+        <th>Registration date
+            <a href="{{url_for('user_api.user', order_by = 'submission_time', order_direction = 'asc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
+            <a href="{{url_for('user_api.user', order_by = 'submission_time', order_direction = 'desc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
+        </th>
+        <th>Number of asked questions
+            <a href="{{url_for('user_api.user', order_by = 'question_count', order_direction = 'asc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
+            <a href="{{url_for('user_api.user', order_by = 'question_count', order_direction = 'desc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
+        </th>
+        <th>Number of asked answers 
+            <a href="{{url_for('user_api.user', order_by = 'answer_count', order_direction = 'asc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
+            <a href="{{url_for('user_api.user', order_by = 'answer_count', order_direction = 'desc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
+        </th>
+        <th>Number of asked comments 
+            <a href="{{url_for('user_api.user', order_by = 'comment_count', order_direction = 'asc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
+            <a href="{{url_for('user_api.user', order_by = 'comment_count', order_direction = 'desc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
+        </th>
+        <th>Reputation
+            <a href="{{url_for('user_api.user', order_by = 'reputation', order_direction = 'asc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
+            <a href="{{url_for('user_api.user', order_by = 'reputation', order_direction = 'desc')}}"><img
+                src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
+        </th>
     </tr>
 
-    {%for user,user_data in users%}
+    {%for user in users%}
     <tr style="text-align: center;">
         <td>{{user['user_name']}}</td>
         <td>{{user['submission_time']}}</td>
-        <td>{{user_data['question_count']}}</td>
-        <td>{{user_data['answer_count']}}</td>
-        <td>{{user_data['comment_count']}}</td>
+        <td>{{user['question_count']}}</td>
+        <td>{{user['answer_count']}}</td>
+        <td>{{user['comment_count']}}</td>
         <td>{{user['reputation']}}</td>
     </tr>
     {%endfor%}
