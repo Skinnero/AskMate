@@ -56,6 +56,7 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS public.users_vote;
 CREATE TABLE users_vote (
+    id serial NOT NULL,
     user_id integer NOT NULL,
     voted integer NOT NULL,
     question_id integer,
@@ -88,6 +89,9 @@ CREATE TABLE tag (
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
 
+ALTER TABLE ONLY users_vote
+    ADD CONSTRAINT pk_users_vote_id PRIMARY KEY (id);
+    
 ALTER TABLE ONLY comment
     ADD CONSTRAINT pk_comment_id PRIMARY KEY (id);
 

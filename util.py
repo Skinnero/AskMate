@@ -22,6 +22,25 @@ def prepare_user_before_saving(data):
         'reputation': 0,
     }
 
+def prepare_user_vote_before_saving(user_id,voted,**text_id):
+    """Prepares data for saving
+    (Only for user_vote)
+
+    Args:
+        user_id (int): user id
+        text_id (kwargs): kwargs 'question_id' or 'answer_id' 
+        voted (int): 1 for upvote otherwise -1
+
+    Returns:
+        dict: prepare data to change
+    """    
+    return {
+            'user_id':user_id,
+            'voted': voted,
+            'question_id': text_id.get('question_id',None),
+            'answer_id': text_id.get('answer_id',None)
+    }
+
 
 def prepare_answer_before_saving(data):
     """Prepares data for saving
@@ -155,7 +174,15 @@ def verify_password(password, hashed_password):
 
 
 def calculate_user_reputation(data):
+    """Calculate all votes from tables and puts it into 
+    the 'reputation' key
 
+    Args:
+        data (list): list of dicts
+
+    Returns:
+        data: list of dicts 
+    """    
     for user in data:
         user['question_vote_up'] *= 5
         user['question_vote_down'] *= 2
@@ -168,5 +195,5 @@ def calculate_user_reputation(data):
         user.pop('answer_vote_up')
         user.pop('answer_vote_down')
         user.pop('answer_accepted')
-    print(data)
     return data
+

@@ -25,7 +25,6 @@ def comment_add_to_answer(answer_id,question_id):
     if request.method == "GET":
         return render_template("/add_comment_to_answer.html", answer_id=answer_id, question_id=question_id)
     else:
-        print(question_id)
         data = request.form.to_dict()
         data['answer_id'] = answer_id
         data['user_id'] = session['user']['id']

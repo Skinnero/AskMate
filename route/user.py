@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from util import create_password, prepare_user_before_saving, verify_password
 from data_handler import insert_data_into_db, read_specified_lines_from_db, read_all_data_from_db,\
     count_question_answer_comment_from_db_by_user
-from connection import USERS, QUESTION, ANSWER, COMMENT, USERS_VOTE
+from connection import USERS, QUESTION, ANSWER, COMMENT
 
 
 user_api = Blueprint('user_api', __name__)
@@ -36,7 +36,6 @@ def login():
             return render_template('login.html', message=message)
         if verify_password(request.form['user_password'].encode(), user_data['password'].encode()):
             session['user'] = user_data
-            session['user_vote'] = read_specified_lines_from_db(USERS_VOTE,'user_id = ',session['user']['id'])
             session.permanent = False
             return redirect(url_for('home'))
         else:
