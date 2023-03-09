@@ -1,8 +1,9 @@
 {% extends "index.html" %}
-{%block content%}
+{% block content %}
 
-<a class="button" href="{{url_for('question_api.question_add')}}" style="vertical-align:middle"><span>ADD
-        QUESTION</span></a>
+{% if session['user'] %}
+<a class="button" href="{{url_for('question_api.question_add')}}" style="vertical-align:middle"><span>ADD QUESTION</span></a>
+{%endif%}
 <form action="{{url_for('search', search=search)}}">
     <input name="search" type="text">
     <button type="submit">Search</button>

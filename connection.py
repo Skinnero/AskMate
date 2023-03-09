@@ -12,6 +12,8 @@ QUESTION = 'question'
 COMMENT = 'comment'
 TAG = 'tag'
 QUESTION_TAG = 'question_tag'
+USERS = 'users'
+USERS_VOTE = 'users_vote'
 
 # Image folder
 IMAGE_DATA = path.join('static', 'images')
@@ -19,7 +21,7 @@ ALLOWED_EXTENSIONS = {'txt','jpg','png','jpeg'}
 
 # Enviroment data
 DATABASE = environ.get('DATABASE')
-USER = environ.get('USER')
+DB_USER = environ.get('USER')
 PASSWORD = environ.get('PASSWORD')
 
 def connect_to_database():
@@ -29,7 +31,7 @@ def connect_to_database():
         class: cursor 
     """
     try:
-        with psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD) as conn:
+        with psycopg2.connect(database=DATABASE, user=DB_USER, password=PASSWORD) as conn:
             conn.autocommit = True
             return conn.cursor(cursor_factory=RealDictCursor)
     except psycopg2.DatabaseError as exception:
