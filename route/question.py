@@ -16,9 +16,6 @@ def question(id):
         session['question_vote'] = [q for q in vote_data if q['question_id'] == int(id)][0]
     except IndexError:
         session['question_vote'] = []
-
-    #TODO: dictionary extend or smth with answer upvotes
-    print(session['answer_vote'])
     question_data = read_single_row_from_db_by_id(QUESTION, id)
     answers_data = [a for a in read_all_data_from_db(ANSWER) if a['question_id'] == int(id)]
     comment_data = read_all_data_from_db(COMMENT)
