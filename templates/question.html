@@ -96,19 +96,17 @@
 {% endfor %}
 <br>
 <table>
-    {% for answer in answers %}
-        <tr>
+        {% for answer in answers %}
+                <tr>
                 {%if question['user_id'] == session['user']['id'] and answer['accepted'] == 0 %}
                         <td class="button">
                                 <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}">Accept an answer</a>
                         </td>
-                {%endif%}
-                {%if answer['user_id'] == session['user']['id'] and answer['accepted'] == 1 %}
+                {%elif answer['user_id'] == session['user']['id'] and answer['accepted'] == 1 %}
                         <td class="button">
                                 <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}">Accept an answer</a>
                         </td>
-                {%endif%}
-                {%if answer['accepted'] == 2 %}
+                {%elif answer['accepted'] == 2 %}
                         <td class="button">
                                 ANSWER ACCEPTED!
                         </td>
@@ -124,8 +122,8 @@
                 {%endif%}
                         <td><img src="{{url_for('image', filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
                         <td>{{ answer['vote_number']}}</td>
+                
                 {%if answer['user_id'] != session['user']['id']%}
-                {% for vote in session['answer_vote'] %}
                         {%if answer['id'] == vote['answer_id'] and vote['voted'] == 1%}
                                 <td class="button1">
                                         <button style="background-color: green">+</button>
@@ -148,30 +146,31 @@
                                         <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a>
                                 </td>
                         {%endif%}
-                {%endfor%}
-        </tr>
-        <tr>
-                <td class="button">
-                        <a href="{{url_for('comment_api.comment_add_to_answer', question_id = question['id'], answer_id = answer['id'])}}">Add a comment</a>
-                </td>
-        </tr>
-    {% for comment in comments %}
-    {% if comment['answer_id'] == answer['id'] %}
-    <tr>
-        <td class="button">
-                <a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete a comment</a>
-        </td>
-        <td class="button">
-                <a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a comment</a>
-        </td>
-        <td class="comment_style">{{comment['message']}}</td>
-        <td class="comment_style">{{comment['submission_time']}}</td>
-        <td class="comment_style">{{comment['edited_count']}}</td>
-    </tr>
-    {% endif %}
-    {% endfor %}
+                {%endif%}
 
-    {% endif %}
-    {% endfor %}
+                
+                                        </tr>
+                                        <tr>
+                                                <td class="button">
+                                                        <a href="{{url_for('comment_api.comment_add_to_answer', question_id = question['id'], answer_id = answer['id'])}}">Add a comment</a>
+                                                </td>
+                                        </tr>
+                        {% for comment in comments %}
+                                        {% if comment['answer_id'] == answer['id'] %}
+                                        <tr>
+                                        <td class="button">
+                                                <a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete a comment</a>
+                                        </td>
+                                        <td class="button">
+                                                <a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a comment</a>
+                                        </td>
+                                        <td class="comment_style">{{comment['message']}}</td>
+                                        <td class="comment_style">{{comment['submission_time']}}</td>
+                                        <td class="comment_style">{{comment['edited_count']}}</td>
+                                        </tr>
+                                        {% endif %}
+                        {% endfor %}
+                
+        {% endfor %}
 
     {% endblock %}

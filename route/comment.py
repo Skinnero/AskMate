@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, url_for, render_template, session
 from util import prepare_comment_before_saving
 from data_handler import insert_data_into_db, read_single_row_from_db_by_id, delete_data_in_db, update_data_in_db
-from connection import COMMENT, ANSWER
+from connection import COMMENT, ANSWER, QUESTION
 
 
 comment_api = Blueprint('comment_api', __name__)
@@ -22,6 +22,7 @@ def comment_add_to_question(question_id):
 
 @comment_api.route('/answer/<answer_id>/<question_id>/add-comment', methods=["GET", "POST"])
 def comment_add_to_answer(answer_id,question_id):
+    #TODO: deal with double id's, make it single
     if request.method == "GET":
         return render_template("/add_comment_to_answer.html", answer_id=answer_id, question_id=question_id)
     else:
@@ -44,9 +45,9 @@ def comment_edit(comment_id):
         data = request.form.to_dict()
         comment['message'] = data['message']
         comment['edited_count'] += 1
-        answer = read_single_row_from_db_by_id(ANSWER, comment['answer_id'])
+        question = read_single_row_from_db_by_id(QUESTION, comment['question_id'])
         update_data_in_db(COMMENT, comment)
-        return redirect(url_for("question_api.question", id=answer['question_id']))
+        return redirect(url_for("question_api.question", id=question['id']))
 
 
 @comment_api.route("/comments/<comment_id>/delete", methods=["GET"])

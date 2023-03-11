@@ -49,13 +49,13 @@ def answer_vote_up(answer_id):
     data['vote_number'] += 1
     update_data_in_db(ANSWER, data)
     update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
-    if session['answer_vote'] == []:
-        vote_data = prepare_user_vote_before_saving(session['user']['id'],-1,answer_id=answer_id)
-        insert_data_into_db(USERS_VOTE,vote_data)
-    else:
+    if request.args.get('voted_answer_id'):
         vote_data = read_single_row_from_db_by_id(USERS_VOTE,request.args.get('voted_answer_id'))
         vote_data['voted'] = 1
         update_data_in_db(USERS_VOTE,vote_data)
+    else:
+        vote_data = prepare_user_vote_before_saving(session['user']['id'],-1,answer_id=answer_id)
+        insert_data_into_db(USERS_VOTE,vote_data)
     return redirect(url_for("question_api.question", id=data['question_id']))
 
 
@@ -64,14 +64,14 @@ def answer_vote_down(answer_id):
     data = read_single_row_from_db_by_id(ANSWER, answer_id)
     data['vote_number'] -= 1
     update_data_in_db(ANSWER, data)
-    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
-    if session['answer_vote'] == []:
-        vote_data = prepare_user_vote_before_saving(session['user']['id'],-1,answer_id=answer_id)
-        insert_data_into_db(USERS_VOTE,vote_data)  
-    else:
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count())) 
+    if request.args.get('voted_answer_id'):
         vote_data = read_single_row_from_db_by_id(USERS_VOTE,request.args.get('voted_answer_id'))
         vote_data['voted'] = -1
         update_data_in_db(USERS_VOTE,vote_data)
+    else:
+        vote_data = prepare_user_vote_before_saving(session['user']['id'],-1,answer_id=answer_id)
+        insert_data_into_db(USERS_VOTE,vote_data) 
     return redirect(url_for("question_api.question", id=data['question_id']))
 
 @answer_api.route("/answer/<answer_id>/accept")

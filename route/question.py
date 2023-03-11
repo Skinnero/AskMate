@@ -6,17 +6,19 @@ read_single_row_from_db_by_id, take_tags_from_db_by_question_id, read_specified_
 read_necessery_data_from_db_for_reputation_count
 
 
-
 question_api = Blueprint('question_api', __name__)
 
 @question_api.route("/question/<id>", methods=["GET"])
 def question(id):
-    session['user_vote'] = read_specified_lines_from_db(USERS_VOTE,'user_id = ',session['user']['id'])
+    vote_data = read_all_data_from_db(USERS_VOTE)
+    session['answer_vote'] = [a for a in vote_data if a['answer_id']]
     try:
-        session['answer_vote'] = [a for a in session['user_vote'] if a['answer_id']]
-        session['question_vote'] = [q for q in session['user_vote'] if q['question_id'] == int(id)][0]
+        session['question_vote'] = [q for q in vote_data if q['question_id'] == int(id)][0]
     except IndexError:
         session['question_vote'] = []
+
+    #TODO: dictionary extend or smth with answer upvotes
+    print(session['answer_vote'])
     question_data = read_single_row_from_db_by_id(QUESTION, id)
     answers_data = [a for a in read_all_data_from_db(ANSWER) if a['question_id'] == int(id)]
     comment_data = read_all_data_from_db(COMMENT)
@@ -30,7 +32,6 @@ def question(id):
                            comments=comment_data,
                            tags=tag_data,
                            user_name=user_name['user_name'])
-
 
 @question_api.route("/add-question", methods=["GET", "POST"])
 def question_add():
@@ -107,10 +108,8 @@ def question_add_tag(question_id):
     else:
         new_tag = request.form.to_dict()
         insert_data_into_db(TAG, new_tag)
-        new_tag_id = read_specified_lines_from_db(
-            TAG, "name = ", new_tag['name'], "id")
-        question_tag = {'question_id': question_id,
-                        'tag_id': new_tag_id[0]['id']}
+        new_tag_id = read_specified_lines_from_db(TAG, "name = ", new_tag['name'], "id")[0]
+        question_tag = {'question_id': question_id,'tag_id': new_tag_id['id']}
         insert_data_into_db(QUESTION_TAG, question_tag)
         return redirect(url_for("question_api.question", id=question_id))
 

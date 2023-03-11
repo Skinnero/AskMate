@@ -20,6 +20,7 @@ def prepare_user_before_saving(data):
         'email': data['user_email'],
         'password': data['user_password'],
         'reputation': 0,
+        'submission_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
 
 def prepare_user_vote_before_saving(user_id,voted,**text_id):
