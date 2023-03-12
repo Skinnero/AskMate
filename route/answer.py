@@ -45,34 +45,53 @@ def answer_delete(answer_id):
 
 @answer_api.route("/answer/<answer_id>/vote_up", methods=["GET"])
 def answer_vote_up(answer_id):
-    data = read_single_row_from_db_by_id(ANSWER, answer_id)
-    data['vote_number'] += 1
-    update_data_in_db(ANSWER, data)
-    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
-    if request.args.get('voted_answer_id'):
+    if request.args.get('vote_exist'):
+        vote = 1
+        vote_data = prepare_user_vote_before_saving(session['user']['id'],vote,answer_id=answer_id)
+        insert_data_into_db(USERS_VOTE,vote_data)
+    else:
         vote_data = read_single_row_from_db_by_id(USERS_VOTE,request.args.get('voted_answer_id'))
+        # if vote_data['user_id'] == session['user']['id']:
+        vote = 2 if vote_data['voted'] == -1 else 1
         vote_data['voted'] = 1
         update_data_in_db(USERS_VOTE,vote_data)
-    else:
-        vote_data = prepare_user_vote_before_saving(session['user']['id'],-1,answer_id=answer_id)
-        insert_data_into_db(USERS_VOTE,vote_data)
+    data = read_single_row_from_db_by_id(ANSWER, answer_id)
+    data['vote_number'] += vote
+    update_data_in_db(ANSWER, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count()))
     return redirect(url_for("question_api.question", id=data['question_id']))
 
 
 @answer_api.route("/answer/<answer_id>/vote_down", methods=["GET"])
 def answer_vote_down(answer_id):
-    data = read_single_row_from_db_by_id(ANSWER, answer_id)
-    data['vote_number'] -= 1
-    update_data_in_db(ANSWER, data)
-    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count())) 
-    if request.args.get('voted_answer_id'):
+    if request.args.get('vote_exist'):
+        vote = -1
+        vote_data = prepare_user_vote_before_saving(session['user']['id'],vote,answer_id=answer_id)
+        insert_data_into_db(USERS_VOTE,vote_data) 
+    else:
         vote_data = read_single_row_from_db_by_id(USERS_VOTE,request.args.get('voted_answer_id'))
+        # if vote_data['user_id'] == session['user']['id']:
+        vote = -2 if vote_data['voted'] == 1 else -1
         vote_data['voted'] = -1
         update_data_in_db(USERS_VOTE,vote_data)
-    else:
-        vote_data = prepare_user_vote_before_saving(session['user']['id'],-1,answer_id=answer_id)
-        insert_data_into_db(USERS_VOTE,vote_data) 
+    data = read_single_row_from_db_by_id(ANSWER, answer_id)
+    data['vote_number'] += vote
+    update_data_in_db(ANSWER, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count())) 
     return redirect(url_for("question_api.question", id=data['question_id']))
+
+@answer_api.route("/answer/<answer_id>/vote_neutral", methods=["GET"])
+def answer_vote_neutral(answer_id):
+    vote_data = read_single_row_from_db_by_id(USERS_VOTE,request.args.get('voted_answer_id'))
+    previous_vote = vote_data['voted']
+    vote_data['voted'] = 0
+    update_data_in_db(USERS_VOTE,vote_data)
+    data = read_single_row_from_db_by_id(ANSWER, answer_id)
+    data['vote_number'] -= previous_vote
+    update_data_in_db(ANSWER, data)
+    update_data_in_db(USERS,calculate_user_reputation(read_necessery_data_from_db_for_reputation_count())) 
+    return redirect(url_for("question_api.question", id=data['question_id']))
+
 
 @answer_api.route("/answer/<answer_id>/accept")
 def answer_accept(answer_id):

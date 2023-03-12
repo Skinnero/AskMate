@@ -64,4 +64,4 @@ def user_profile(user_id):
 def logout():
 
     session.pop('user')
-    return render_template('index.html')
+    return redirect(url_for('home'))

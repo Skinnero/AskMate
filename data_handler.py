@@ -41,7 +41,7 @@ def read_single_row_from_db_by_id(table, id):
     Returns:
         dict: dicts with data
     """
-    CURSOR.execute(f"SELECT * FROM {table} WHERE id='{id}'")
+    CURSOR.execute(f"SELECT * FROM {table} WHERE id= {id}")
     return CURSOR.fetchone()
 
 

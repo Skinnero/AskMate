@@ -1,9 +1,14 @@
 {%extends "index.html"%}
 {%block content%}
-<form enctype="multipart/form-data"
-    action="{{url_for('comment_api.comment_add_to_question',question_id = question_id)}}" method="POST">
-    <label for="question">Comment</label>
-    <textarea name="message"></textarea>
-    <input class="button" type="submit" name="submit" value="Post">
+<h1 class="display-1" style="text-align: center;">Add Comment</h1>
+<p style="text-align: center;">{{ question['message'] }}</p>
+<form enctype="multipart/form-data"action="{{url_for('comment_api.comment_add_to_question',question_id = question['id'])}}" method="POST" style="margin: 0 30% 0 30%;">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Comment</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="message"></textarea>
+    </div>
+    <div style="text-align:center;">
+        <button type="submit" class="btn btn-primary">Add Comment</button>
+    </div>
 </form>
 {%endblock%}

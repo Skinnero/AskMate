@@ -1,58 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block head %}
+{% block head %}
     <title>AskMate</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    {% endblock %}
+{% endblock %}
 </head>
-
-
 <body>
-    <nav>
-        <a class="button" href="{{url_for('home')}}" style="vertical-align:middle"><span>Home </span></a>
-        <a class="button" href="{{url_for('list_questions')}}" style="vertical-align:middle"><span>Questions</span></a>
-        <a class="button" href="{{url_for('tags')}}" style="vertical-align:middle"><span>Tags</span></a>
-        <a class="button" href="{{url_for('about_us')}}" style="vertical-align:middle"><span>About Us</span></a>
-        {% if session['user'] %}
-        <a class="button" href="{{url_for('user_api.user')}}" style="vertical-align:middle"><span>Users</span></a>
-        <a class="button" href="{{url_for('user_api.user_profile',user_id = session['user']['id'])}}"
-            style="vertical-align:middle"><span>{{ session['user']['user_name'] }}</span></a>
-        <a class="button" href="{{url_for('user_api.logout')}}" style="vertical-align:middle"><span>Log out</span></a>
-        {% else %}
-        <a class="button" href="{{url_for('user_api.registration')}}" style="vertical-align:middle"><span>Sign
-                up</span></a>
-        <a class="button" href="{{url_for('user_api.login')}}" style="vertical-align:middle"><span>Log in</span></a>
-        {% endif %}
-    </nav>
 
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid" style="margin: 0 5% 0 5%;">
+          <a class="navbar-brand" href="{{url_for('home')}}">AskMate</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('list_questions')}}">Questions</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('tags')}}">Tags</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('user_api.user')}}">Users</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('about_us')}}">About us</a>
+              </li>
+            </ul>
+            <form style="align-items: center; margin-left:20%;" class="d-flex p-2 flex-fill" role="search" action="{{url_for('search', search=search)}}">
+                <input class="form-control me-2 p-2 flex-fill" type="search" placeholder="Search" aria-label="Search" name="search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="d-flex justify-content-center" style="margin-left: 30%;">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if session['user'] %}
+                <li class="nav-item" style="margin-right: 10px;">
+                    <button class="btn btn-outline-success">
+                        <a class="nav-link" href="{{url_for('user_api.user_profile',user_id = session['user']['id'])}}"style="vertical-align:middle">{{ session['user']['user_name'] }}</a>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-outline-danger">
+                        <a class="nav-link" href="{{url_for('user_api.logout')}}">Log out</a>
+                    </button>
+                </li>
+                {% else %}
+                <li class="nav-item" style="margin-right: 10px;">
+                    <button class="btn btn-outline-success">
+                        <a class="nav-link" href="{{url_for('user_api.registration')}}">Sign up</a>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-outline-success">
+                        <a class="nav-link" href="{{url_for('user_api.login')}}">Log in</a>
+                    </button>
+                </li>
+                {% endif %}
+            </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+<div style="margin: 20px;">
+{%block content%}
 
-
-
-    {%block content%}
-    <h1 class="Title_style4">Welcome to AskMate!</h1>
+    <h1 class="display-1" style="text-align: center;">Welcome to AskMate!</h1>
     <br>
-    <p class="Title_style5">Here you can post a Question about any topic you want and hope people will acually answer
-        you.
-        You can provide answer for other users as well so you all become satisfied with our service.
-        Remeber to provide a decent answer otherwise you can be downvoted into oblivion and your answer/question will be
-        deleted! </p>
+    <ul style="text-align: center; list-style:none;">Here you can:
+        <li>
+            Asking people about diffrent topic 
+        </li>
+        <li>
+            Helping people with thier problems
+        </li>
+        <li>
+            Searching for question someone may already answerd
+        </li>
+    </ul>
 
     {% for question in questions %}
     <table style="width: 100%;">
         <tr>
-
-            <td class="Title_style3" style="width: 25%;">{{question['title']}}</td>
-            <td class="Title_style3">{{question['message']}}</td>
+            <td style="width: 25%;">{{question['title']}}</td>
+            <td >{{question['message']}}</td>
         </tr>
     </table>
     {% endfor %}
-    {%endblock%}
+{%endblock%}
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>
 
 </html>

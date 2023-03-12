@@ -1,9 +1,13 @@
 {%extends "index.html"%}
 {%block content%}
-<form enctype="multipart/form-data" action="{{url_for('question_api.question_add_tag',question_id = question_id)}}"
-    method="POST">
-    <label>Tag</label>
-    <textarea name="name"></textarea>
-    <input type="submit" value="Add a tag">
+<h1 class="display-1" style="text-align: center;">Add Tag</h1>
+<form enctype="multipart/form-data" action="{{url_for('question_api.question_add_tag',question_id = question_id)}}" style="margin: 0 30% 0 30%;" method="POST">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Tag</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" name="name">
+    </div>
+    <div style="text-align:center;">
+        <button type="submit" class="btn btn-primary">Add Tag</button>
+    </div>
 </form>
 {%endblock%}

@@ -1,9 +1,9 @@
 {% extends 'index.html' %}
 {%block content%}
-<div>
+<div style="text-align: center;">
     <h1 style="text-align: center;">Tags</h1>
     {% for tag in tags%}
-    <p>{{tag['name']}}</p>
+    | <span style="color: rgb(238, 255, 0);">{{tag['name']}}</span> |
     {%endfor%}
 </div>
 {%endblock%}
