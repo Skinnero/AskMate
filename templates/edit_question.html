@@ -1,25 +1,21 @@
 {% extends 'index.html' %}
 {% block content %}
-<h1>Edit Question</h1>
-<form enctype="multipart/form-data" action="{{url_for('question_api.question_edit', id = question['id'])}}"
-    method="POST">
-    <p>
-        <label for="title">Title</label>
-        <textarea name="title" cols="30" rows="10">{{ question['title'] }}</textarea>
-    </p>
-    <br>
-    <p>
-        <label for="question">Question</label>
-        <textarea name="message" cols="30" rows="10">{{ question['message'] }}</textarea>
-    </p>
-    <br>
-    <p>
+<h1 class="display-1" style="text-align: center;">Edit Question</h1>
+<form enctype="multipart/form-data" action="{{url_for('question_api.question_edit', id = question['id'])}}" style="margin: 0 30% 0 30%;" method="POST">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Title</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" name="title" value="{{question['title']}}">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Message</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="message">{{question['message']}}</textarea>
+    </div>
+    <div class="mb-3">
         <label>Picture</label>
         <input class="button" type="file" name="image">
-    </p>
-    <br>
-    <p>
-        <input class="button" type="submit" name='submit' value="Edit">
-    </p>
+    </div>
+    <div style="text-align:center;">
+        <button type="submit" class="btn btn-primary">Edit Question</button>
+    </div>
 </form>
 {% endblock %}

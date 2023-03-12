@@ -1,177 +1,141 @@
 {% extends "index.html" %}
 {% block content %}
-<h1 class="Title_style1" style="text-align:center;">{{ question['title'] }} </h1>
-{{user_name}}
-{% for tag in tags %}
-<h3>
-        #{{ tag['name'] }} 
-        {%if question['user_id'] == session['user']['id']%}
-        <a href="{{url_for('question_api.question_delete_tag',question_id = question['id'], tag_id = tag['id'])}}">
-                [x]
-        </a>
-        {%endif%}
-</h3>
-{% endfor %}
-{%if question['user_id'] == session['user']['id']%}
-        <p class="button">
-                <a href="{{url_for('question_api.question_delete', id=question['id'])}}">Delete Question</a>
-        </p>
-        <p class="button">
-                <a href="{{url_for('question_api.question_edit', id=question['id'])}}">Edit Question</a>
-        </p>
-        <p class="button">
-                <a href="{{url_for('question_api.question_add_tag', question_id = question['id'])}}">Add a Tag</a>
-        </p>
-{%endif%}
-        <br>
-        <p class="question_style"><span style="font-size: 30px">{{ question['message'] }}</span></p>
-        <br>
-        <p>
-                <img src="{{url_for('image', filename=question['image'])}}" onerror='this.style.display = "none"'>
-        </p>
-        <p class="vote_style">
-                Vote Number: {{question['vote_number']}}
-        </p>
-{%if question['user_id'] != session['user']['id']%}
-        {%if question['id'] == session['question_vote']['question_id'] and session['question_vote']['voted'] == 1%}
-                <td class="button1">
-                        <button style="background-color: green">+</button>
-                </td>
-                <td class="button1">
-                        <a href="{{url_for('question_api.question_vote_down', question_id=question['id'], )}}"><button>-</button></a>
-                </td>
-        {%elif question['id'] == session['question_vote']['question_id'] and session['question_vote']['voted'] == -1%}
-                <td class="button1">
-                        <a href="{{url_for('question_api.question_vote_up', question_id=question['id'], )}}"><button>+</button></a>
-                </td>
-                <td class="button1">
-                        <button style="background-color: red">-</button>
-                </td>
-        {%else%}
-                <td class="button1">
-                        <a href="{{url_for('question_api.question_vote_up', question_id=question['id'], )}}"><button>+</button></a>
-                </td>
-                <td class="button1">
-                        <a href="{{url_for('question_api.question_vote_down', question_id=question['id'], )}}"><button>-</button></a>
-                </td>
-        {%endif%}
-        
-{%endif%}
-        <p class="vote_style">Viewed: {{question['view_number']}}
-
-        </p>
-        <br>
-{%if question['user_id'] != session['user']['id']%}
-        <p class="button">
-                <a href="{{url_for('answer_api.answer_add', id=question['id'])}}">Add Answer</a>
-        </p>
-{%endif%}
-<p class="button">
-        <a href="{{url_for('comment_api.comment_add_to_question',question_id = question['id'])}}">Add Comment</a>
-</p>
-
-
-{% for comment in comments %}
-{% if comment['question_id'] == question['id'] %}
-
-
-
-
-<table style="width: 100%;">
-    <tr>
-        {%if comment['user_id'] == session['user']['id']%}
-        <th class="button">
-                <a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete a comment</a>
-        </th>
-        <td class="button">
-                <a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a comment</a>
-        </td>
-        {%endif%}
-        <th class="button">{{comment['message']}}</th>
-        <th class="button">{{comment['submission_time']}}</th>
-        <th class="button">{{comment['edited_count']}}</th>
-    </tr>
-</table>
-{% endif %}
-{% endfor %}
-<br>
-<table>
-    {% for answer in answers %}
-        <tr>
-                {%if question['user_id'] == session['user']['id'] and answer['accepted'] == 0 %}
-                        <td class="button">
-                                <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}">Accept an answer</a>
-                        </td>
-                {%endif%}
-                {%if answer['user_id'] == session['user']['id'] and answer['accepted'] == 1 %}
-                        <td class="button">
-                                <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}">Accept an answer</a>
-                        </td>
-                {%endif%}
-                {%if answer['accepted'] == 2 %}
-                        <td class="button">
-                                ANSWER ACCEPTED!
-                        </td>
-                {%endif%}
-                        <td class="answer_style" style="font-size: 30px">{{ answer['message'] }}</td>
-                {%if answer['user_id'] == session['user']['id']%}
-                        <td class="button">
-                                <a href="{{url_for('answer_api.answer_delete', answer_id=answer['id'])}}">Delete</a>
-                        </td>
-                        <td class="button">
-                                <a href="{{url_for('answer_api.answer_edit', answer_id=answer['id'])}}">Edit</a>
-                        </td>
-                {%endif%}
-                        <td><img src="{{url_for('image', filename=answer['image'])}}" onerror='this.style.display = "none"'></td>
-                        <td>{{ answer['vote_number']}}</td>
-                {%if answer['user_id'] != session['user']['id']%}
-                {% for vote in session['answer_vote'] %}
-                        {%if answer['id'] == vote['answer_id'] and vote['voted'] == 1%}
-                                <td class="button1">
-                                        <button style="background-color: green">+</button>
-                                </td>
-                                <td class="button1">
-                                        <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], voted_answer_id=vote['id'] )}}"><button>-</button></a>
-                                </td>
-                        {%elif answer['id'] == vote['answer_id'] and vote['voted'] == -1%}
-                                <td class="button1">
-                                        <a href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], voted_answer_id=vote['id'] )}}"><button>+</button></a>
-                                </td>
-                                <td class="button1">
-                                        <button style="background-color: red">-</button>
-                                </td>
-                        {%else%}
-                                <td class="button1">
-                                        <a href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], )}}"><button>+</button></a>
-                                </td>
-                                <td class="button1">
-                                        <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], )}}"><button>-</button></a>
-                                </td>
+<div style="display:flex">
+        <div style="float:left;width:75%">
+                <h1 class="display-1" style="text-align: center;">{{ question['title'] }}</h1>
+                <span>
+                        Owner: <span style="color:white;">{{user_name}}</span>   Asked: <span style="color:white;">{{question['submission_time']}}</span>
+                        Viewed: <span style="color:white;">{{question['view_number']}}</span>
+                </span>
+                <p style="font-size: 30px">{{ question['message'] }}</p>
+                {% for tag in tags %}
+                        <span>#{{ tag['name'] }}</span> 
+                        {%if question['user_id'] == session['user']['id']%}
+                        <a href="{{url_for('question_api.question_delete_tag',question_id = question['id'], tag_id = tag['id'])}}">[x]</a>
                         {%endif%}
-                {%endfor%}
-        </tr>
+                {% endfor %}
+        </div>
+        <div style="float:right;width:25%">
+                <img src="{{url_for('image', filename=question['image'])}}" style="width:100%;"  onerror='this.style.display = "none" '>
+        </div>
+</div>
+<div style="margin-top: 10px;">
+{%if question['user_id'] == session['user']['id']%}
+        <a href="{{url_for('question_api.question_delete', id=question['id'])}}"><button type="button" class="btn btn-danger">Delete Question</button></a>
+        <a href="{{url_for('question_api.question_edit', id=question['id'])}}"><button type="button" class="btn btn-primary">Edit Question</button></a>
+        <a href="{{url_for('question_api.question_add_tag', question_id = question['id'])}}"><button type="button" class="btn btn-warning">Add Tag</button></a>   
+{%endif%}
+        <span>Vote Number: {{question['vote_number']}}</span>
+{%if question_votes == [] and question['user_id'] != session['user']['id']%}
+    <a href="{{url_for('question_api.question_vote_up', question_id=question['id'], vote_exist=1)}}"><button type="button" class="btn" style="background-color: white;">+</button></a>
+    <a href="{{url_for('question_api.question_vote_down', question_id=question['id'], vote_exist=1)}}"><button type="button" class="btn" style="background-color: white;">-</button></a>
+{%endif%}
+{%if question['user_id'] != session['user']['id']%}
+    {%if question_votes['user_id'] == session['user']['id']%}
+        {%if question['id'] == question_votes['question_id'] and question_votes['voted'] == 1%}
+            <a href="{{url_for('question_api.question_vote_neutral', question_id=question['id'], question_votes=question_votes['id'])}}"><button type="button" class="btn" style="background-color: green;">+</button></a>
+            <a href="{{url_for('question_api.question_vote_down', question_id=question['id'], question_votes=question_votes['id'])}}"><button type="button" class="btn" style="background-color: white;">-</button></a>
+        {%elif question['id'] == question_votes['question_id'] and question_votes['voted'] == -1%}
+            <a href="{{url_for('question_api.question_vote_up', question_id=question['id'], question_votes=question_votes['id'] )}}"><button  type="button" class="btn" style="background-color: white;">+</button></a>
+            <a href="{{url_for('question_api.question_vote_neutral', question_id=question['id'], question_votes=question_votes['id'])}}"><button  type="button" class="btn" style="background-color: red;">-</button></a>
+        {%else%}
+            <a href="{{url_for('question_api.question_vote_up', question_id=question['id'],question_votes=question_votes['id'])}}"><button type="button" class="btn" style="background-color: white;">+</button></a>
+            <a href="{{url_for('question_api.question_vote_down', question_id=question['id'],question_votes=question_votes['id'])}}"><button type="button" class="btn" style="background-color: white;">-</button></a>
+        {%endif%}
+    {%endif%}
+{%endif%}
+</div>
+<div style="margin-top: 10px;">
+{%if question['user_id'] != session['user']['id']%}
+        <a href="{{url_for('answer_api.answer_add', id=question['id'])}}"><button type="button" class="btn" style="background-color: green;">Add Answer</button></a>
+{%endif%}
+        <a href="{{url_for('comment_api.comment_add_to_question',question_id = question['id'])}}"><button type="button" class="btn" style="background-color: yellow;">Add Comment</button></a>
+</div>
+<div>
+{% for comment in comments %}
+        {% if comment['question_id'] == question['id'] and not comment['answer_id'] %}  
+        <table style="width: 50%;margin-left:25%;">
+                <tr>
+                        <th style="width: 50%;">{{comment['message']}} <span style="font-size: 12px;color:rgb(197, 197, 197)">{{comment['submission_time']}}</span>
+                            {% if comment['edited_count'] > 0%}
+                            <span style="font-size: 12px;color:rgb(197, 197, 197)">[Edited]</span>
+                            {%endif%}
+                        </th>
+                        {%if comment['user_id'] == session['user']['id']%}
+                        <th style="text-align: right;">
+                                <a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete a comment</a>
+                        </th>
+                        <td style="text-align: right;">
+                                <a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a comment</a>
+                        </td>
+                        {%endif%}
+                </tr>
+        </table>
+        {% endif %}
+{% endfor %}
+</div>
+<div>
+{% for answer, vote in answers %}  
+    <table style="width:100%;margin-top:25px;">
         <tr>
-                <td class="button">
-                        <a href="{{url_for('comment_api.comment_add_to_answer', question_id = question['id'], answer_id = answer['id'])}}">Add a comment</a>
-                </td>
+            <td class="answer_style" style="font-size: 30px;width:80%">    
+                {%if question['user_id'] == session['user']['id'] and answer['accepted'] == 0 %}
+                    <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}"><span style="font-size: 8px;color:greenyellow">Accept an Answer</span><br></a>
+                {%elif answer['user_id'] == session['user']['id'] and answer['accepted'] == 1 %}
+                    <a href="{{url_for('answer_api.answer_accept', answer_id = answer['id'])}}"><span style="font-size: 8px;color:greenyellow">Accept an Answer</span><br></a>
+                {%elif answer['accepted'] == 2 %}
+                    <span style="font-size: 8px;color:greenyellow">[Accepted!]</span><br>
+                {%endif%}
+                    <span>{{ answer['message'] }}</span>
+                    <img src="{{url_for('image', filename=answer['image'])}}" style="margin-left:60%;width:20%" onerror='this.style.display = "none"'>
+            </td>
+            <td style="text-align: center;margin-right:10%">Voted Number: <br><span>{{ answer['vote_number']}}</span>
+                    {%if vote == []  and answer['user_id'] != session['user']['id']%}
+                        <a href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], vote_exist=1 )}}"><button type="button" class="btn" style="background-color: white;">+</button></a>
+                        <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], vote_exist=1 )}}"><button type="button" class="btn" style="background-color: white;">-</button></a>
+                    {%endif%}
+                    {%if answer['user_id'] != session['user']['id'] and vote['answer_id'] == answer['id']%}
+                        {%if answer['id'] == vote['answer_id'] and vote['voted'] == 1%}
+                            <a href="{{url_for('answer_api.answer_vote_neutral', answer_id=answer['id'], voted_answer_id=vote['id'] )}}"><button type="button" class="btn" style="background-color: green;">+</button></a>
+                            <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], voted_answer_id=vote['id'] )}}"><button type="button" class="btn" style="background-color: white;">-</button></a>
+                        {%elif answer['id'] == vote['answer_id'] and vote['voted'] == -1%}
+                            <a href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], voted_answer_id=vote['id'] )}}"><button type="button" class="btn" style="background-color: white;">+</button></a>
+                            <a href="{{url_for('answer_api.answer_vote_neutral', answer_id=answer['id'], voted_answer_id=vote['id'] )}}"><button type="button" class="btn" style="background-color: red;">-</button></a>
+                        {%else%}
+                            <a href="{{url_for('answer_api.answer_vote_up', answer_id=answer['id'], voted_answer_id=vote['id'])}}"><button type="button" class="btn" style="background-color: white;">+</button></a>
+                            <a href="{{url_for('answer_api.answer_vote_down', answer_id=answer['id'], voted_answer_id=vote['id'])}}"><button type="button" class="btn" style="background-color: white;">-</button></a>
+                        {%endif%}                 
+                    {%endif%}
+            </td>
+            {%if answer['user_id'] == session['user']['id']%}
+                <td style="text-align:center;">
+                    <a href="{{url_for('answer_api.answer_delete', answer_id=answer['id'])}}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    <br>
+                    <a href="{{url_for('answer_api.answer_edit', answer_id=answer['id'])}}"><button type="button" class="btn btn-primary">Edit</button></a>
+                <td>
+            {%endif%}
         </tr>
+    </table>
+    <a href="{{url_for('comment_api.comment_add_to_answer', question_id = question['id'], answer_id = answer['id'])}}"><button type="button" class="btn" style="background-color: yellow;margin-top:5px;">Add Comment</button></a>
     {% for comment in comments %}
-    {% if comment['answer_id'] == answer['id'] %}
-    <tr>
-        <td class="button">
-                <a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete a comment</a>
-        </td>
-        <td class="button">
-                <a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a comment</a>
-        </td>
-        <td class="comment_style">{{comment['message']}}</td>
-        <td class="comment_style">{{comment['submission_time']}}</td>
-        <td class="comment_style">{{comment['edited_count']}}</td>
-    </tr>
-    {% endif %}
+        {% if comment['answer_id'] == answer['id'] %}
+        <table style="width: 50%;margin-left:25%;">
+                <tr>
+                    <th style="width: 50%;">{{comment['message']}} <span style="font-size: 12px;color:rgb(197, 197, 197)">{{comment['submission_time']}}</span>
+                        {% if comment['edited_count'] > 0%}
+                        <span style="font-size: 12px;color:rgb(197, 197, 197)">[Edited]</span>
+                        {%endif%}
+                    </th>
+                    <th style="text-align: right;">
+                        <a href="{{url_for('comment_api.comment_delete', comment_id = comment['id'])}}">Delete a comment</a>
+                    </th>
+                    <td style="text-align: right;">
+                        <a href="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}">Edit a comment</a>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
     {% endfor %}
-
-    {% endif %}
-    {% endfor %}
-
-    {% endblock %}
+{% endfor %}
+</div>
+{% endblock %}

@@ -28,9 +28,7 @@ def login():
     if request.method == "POST":
         message = 'Email or password are incorrect'
         try:
-            user_data = read_specified_lines_from_db(USERS,
-                                                     "email = ",
-                                                     request.form['user_email'])[0]
+            user_data = read_specified_lines_from_db(USERS,"email = ",request.form['user_email'])[0]
         except IndexError:
             return render_template('login.html', message=message)
         if verify_password(request.form['user_password'].encode(), user_data['password'].encode()):
@@ -66,4 +64,4 @@ def user_profile(user_id):
 def logout():
 
     session.pop('user')
-    return render_template('index.html')
+    return redirect(url_for('home'))

@@ -19,10 +19,12 @@ def prepare_user_before_saving(data):
         'user_name': data['user_name'],
         'email': data['user_email'],
         'password': data['user_password'],
+        'submission_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'reputation': 0,
     }
 
-def prepare_user_vote_before_saving(user_id,voted,**text_id):
+
+def prepare_user_vote_before_saving(user_id, voted, **text_id):
     """Prepares data for saving
     (Only for user_vote)
 
@@ -33,12 +35,12 @@ def prepare_user_vote_before_saving(user_id,voted,**text_id):
 
     Returns:
         dict: prepare data to change
-    """    
+    """
     return {
-            'user_id':user_id,
-            'voted': voted,
-            'question_id': text_id.get('question_id',None),
-            'answer_id': text_id.get('answer_id',None)
+        'user_id': user_id,
+        'voted': voted,
+        'question_id': text_id.get('question_id', None),
+        'answer_id': text_id.get('answer_id', None)
     }
 
 
@@ -169,7 +171,7 @@ def verify_password(password, hashed_password):
 
     Returns:
         bool: True if it's the same otherwise False
-    """    
+    """
     return bcrypt.checkpw(password, hashed_password)
 
 
@@ -182,14 +184,15 @@ def calculate_user_reputation(data):
 
     Returns:
         data: list of dicts 
-    """    
+    """
     for user in data:
         user['question_vote_up'] *= 5
         user['question_vote_down'] *= 2
         user['answer_vote_up'] *= 10
         user['answer_vote_down'] *= 2
         user['answer_accepted'] *= 15
-        user['reputation'] = sum([v for k, v in user.items() if k != 'user_name'])
+        user['reputation'] = sum(
+            [v for k, v in user.items() if k != 'user_name'])
         user.pop('question_vote_up')
         user.pop('question_vote_down')
         user.pop('answer_vote_up')
@@ -197,3 +200,49 @@ def calculate_user_reputation(data):
         user.pop('answer_accepted')
     return data
 
+
+def divide_vote_data(data_to_seperate, data, user_id, data_id):
+    """Divides vote date so it can be easily printed for question
+    as well as for answers
+
+    Args:
+        data_to_seperate (str): 'question' or 'answer'
+        data (list): list of users_vote
+        user_id (int): session user id
+        data_id (list or int): list for answers as a whole RealDictReader 
+        or int for question as a question id
+    Returns:
+        list: divided list 
+    """
+    if data_to_seperate == 'question':
+        try:
+            return [q for q in data if q['user_id'] == user_id and q['question_id'] == int(data_id)][0]
+        except IndexError:
+            return []
+    data_id = [i['id'] for i in data_id]
+    answer_vote = [a for a in data if a['user_id']
+                   == user_id and a['answer_id'] in data_id]
+    while len(data_id) != len(answer_vote):
+        answer_vote.append([])
+    return answer_vote
+
+
+def answer_sorting(answers, votes):
+    """Takes in an answers and votes,
+    sorts them and return it so it can be easily
+    printed in html
+    Args:
+        answers (list): list of filtered answers
+        votes (list): list of votes for those answers
+
+    Returns:
+        zip: zip (answer,votes)
+    """
+    for answer in answers:
+        for vote in votes:
+            if vote == []:
+                continue
+            if answer.get('id') == vote.get('answer_id'):
+                x, y = answers.index(answer), votes.index(vote)
+                votes[x], votes[y] = votes[y], votes[x]
+    return zip(answers, votes)

@@ -1,18 +1,21 @@
 {% extends 'index.html' %}
 {%block content%}
-<form action="{{url_for('user_api.login')}}" method="POST">
+<form action="{{url_for('user_api.login')}}" method="POST" style="margin: 0 30% 0 30%;">
 
-    <label for="user_email">Email:
-        <input type="text" name="user_email">
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Email:</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" name="user_email">
         {% if message %}
         {{message}}
         {%endif%}
-    </label>
-    <br>
-    <label for="user_password">Password:
-        <input type="password" name="user_password">
-    </label>
-    <input type="submit" value="Log in">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password:</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" name="user_password">
+    </div>
+    <div style="text-align:center;">
+        <button type="submit" class="btn btn-primary">Log in</button>
+    </div>
 </form>
 
 {%endblock%}

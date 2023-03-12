@@ -1,15 +1,13 @@
 {% extends 'index.html' %}
 {% block content %}
-<h1>Edit Comment</h1>
-<form enctype="multipart/form-data" action="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}"
-    method="POST">
-    <p>
-        <label>Message</label>
-        <textarea name="message" cols="30" rows="10">{{ comment['message'] }}</textarea>
-    </p>
-    <br>
-    <p>
-        <input class="button" type="submit" name='submit' value="Edit">
-    </p>
+<h1 class="display-1" style="text-align: center;">Edit Comment</h1>
+<form enctype="multipart/form-data" action="{{url_for('comment_api.comment_edit', comment_id = comment['id'])}}" style="margin: 0 30% 0 30%;" method="POST">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="message">{{comment['message']}}</textarea>
+    </div>
+    <div style="text-align:center;">
+        <button type="submit" class="btn btn-primary">Edit Comment</button>
+    </div>
 </form>
 {% endblock %}

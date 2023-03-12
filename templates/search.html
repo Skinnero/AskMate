@@ -1,14 +1,12 @@
 {% extends "index.html" %}
 {%block content%}
-<h1>Questions</h1>
-<form action="{{url_for('search', search=search)}}">
-    <input name="search" type="text">
-    <button type="submit">Search</button>
-</form>
-<h1><a href="{{url_for('question_api.question_add')}}">ADD QUESTION</a></h1>
+<h1 class="display-1" style="text-align: center;">Questions</h1>
+{% if session['user'] %}
+<a href="{{url_for('question_api.question_add')}}"><button type="button" class="btn btn-success">AskMate!</button></a>
+{%endif%}
 <div class="table">
     <br>
-    <table class="center">
+    <table style="width: 100%;">
         <tr>
             <th>Title<a href="{{url_for('search', search=search, order_by = 'title', order_direction = 'asc')}}"><img
                         src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a><a
@@ -37,10 +35,15 @@
         </tr>
         {% for index in questions %}
         <tr>
-            <td><a href="{{url_for('question_api.question', id=index['id'])}}" class="Title_style1">{{
-                    index['title'] }}</a></td>
+            <td>
+                {% if session['user']%}
+                <a href="{{url_for('question_api.question', id=index['id'])}}" class="Title_style1">{{index['title'] }}</a>
+                {%else%}
+                {{index['title'] }}
+                {%endif%}            
+            </td>
             <td>{{ index['submission_time'] }}</td>
-            <td class="Title_style3">{{ index['message'] }}</td>
+            <td>{{ index['message'] }}</td>
             <td>{{ index['view_number'] }}</td>
             <td>{{ index['vote_number'] }}</td>
         </tr>

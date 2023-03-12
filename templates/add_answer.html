@@ -1,25 +1,16 @@
 {% extends 'index.html' %}
 {% block content %}
-<p></p>
-<h1>Add Answer</h1>
-
-
-
-<p class="question_style">{{ question['message'] }}</p>
-<form enctype="multipart/form-data" action="{{ url_for('answer_api.answer_add', id = question['id'])}}" method="POST">
-    <p>
-        <label>Your Answer</label>
-        <textarea name="message"></textarea>
-    </p>
-    <br>
-    <p>
+<h1 class="display-1" style="text-align: center;">Add Answer</h1>
+<p style="text-align: center;">{{ question['message'] }}</p>
+<form enctype="multipart/form-data" action="{{ url_for('answer_api.answer_add', id = question['id'])}}" method="POST" style="margin: 0 30% 0 30%;">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="message"></textarea>
+    </div>
         <label>Picture</label>
         <input class="button" type="file" name="image">
-    </p>
-    <br>
-    <p>
-        <input class="button" type="submit" value="Add">
-    </p>
+    <div style="text-align:center;">
+        <button type="submit" class="btn btn-primary">Add Answer</button>
+    </div>
 </form>
-<a class="button" href="{{url_for('question_api.question', id = question['id'])}}">Back</a>
 {% endblock %}

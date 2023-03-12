@@ -1,7 +1,6 @@
 {% extends 'index.html' %}
 {% block content %}
 <table style="width: 100%;">
-    <br>
     <tr>
         <th>Username
             <a href="{{url_for('user_api.user', order_by = 'user_name', order_direction = 'asc')}}"><img
@@ -15,19 +14,19 @@
             <a href="{{url_for('user_api.user', order_by = 'submission_time', order_direction = 'desc')}}"><img
                 src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
         </th>
-        <th>Number of asked questions
+        <th>Number of questions
             <a href="{{url_for('user_api.user', order_by = 'question_count', order_direction = 'asc')}}"><img
                 src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
             <a href="{{url_for('user_api.user', order_by = 'question_count', order_direction = 'desc')}}"><img
                 src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
         </th>
-        <th>Number of asked answers 
+        <th>Number of answers
             <a href="{{url_for('user_api.user', order_by = 'answer_count', order_direction = 'asc')}}"><img
                 src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
             <a href="{{url_for('user_api.user', order_by = 'answer_count', order_direction = 'desc')}}"><img
                 src="https://img.icons8.com/ios-glyphs/512/long-arrow-down.png" width="10" height="10"></a>
         </th>
-        <th>Number of asked comments 
+        <th>Number of comments 
             <a href="{{url_for('user_api.user', order_by = 'comment_count', order_direction = 'asc')}}"><img
                 src="https://img.icons8.com/ios-glyphs/512/long-arrow-up.png" width="10" height="10"></a>
             <a href="{{url_for('user_api.user', order_by = 'comment_count', order_direction = 'desc')}}"><img
@@ -42,7 +41,7 @@
     </tr>
 
     {%for user in users%}
-    <tr style="text-align: center;">
+    <tr>
         <td>{{user['user_name']}}</td>
         <td>{{user['submission_time']}}</td>
         <td>{{user['question_count']}}</td>
