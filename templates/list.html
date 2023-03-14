@@ -50,6 +50,7 @@
 
 
         {% endfor %}
-
-
+        {% if not session['user'] %}
+        <h3 class="display-3" style="text-align: center;">To see the questions you have to be logged in!</h3>
+        {%endif%}
         {%endblock%}
